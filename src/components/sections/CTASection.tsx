@@ -26,16 +26,7 @@ const CTASection = () => {
             through transparent, impactful charity work.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/projects/new">
-              <Button
-                size="lg"
-                variant="secondary"
-                className="px-8 text-base shadow-lg"
-              >
-                Start a Project
-              </Button>
-            </Link>
-            <Link href="/dashboard/user">
+            <Link href="/projects">
               <Button
                 size="lg"
                 variant="outline"

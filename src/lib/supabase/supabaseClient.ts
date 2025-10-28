@@ -1,3 +1,4 @@
+'use client'
 import { createBrowserClient } from "@supabase/ssr";
 
 function getSafeStorage() {
@@ -16,7 +17,7 @@ function getSafeStorage() {
   }
 }
 
-export function createClient() {
+export function createClientUseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 

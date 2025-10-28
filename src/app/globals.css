@@ -203,19 +203,23 @@
 
   /* Glassmorphism utility */
   .glass {
-    background: hsla(210 60% 98% / 0.6);
+    background: hsla(210 60% 98% / 0.7);
     backdrop-filter: blur(12px);
-    border: 1px solid hsla(217 91% 60% / 0.1);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid hsla(217 91% 60% / 0.15);
+    box-shadow: 0 4px 16px hsla(217 91% 60% / 0.08);
   }
 
   .glass-card {
     background: linear-gradient(
       135deg,
-      hsla(210 60% 98% / 0.8) 0%,
-      hsla(210 60% 98% / 0.4) 100%
+      hsla(0 0% 100% / 0.9) 0%,
+      hsla(0 0% 100% / 0.6) 100%
     );
-    backdrop-filter: blur(16px);
-    border: 1px solid hsla(217 91% 60% / 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsla(217 91% 60% / 0.2);
+    box-shadow: 0 8px 32px hsla(217 91% 60% / 0.1);
   }
 
   /* Smooth transitions */

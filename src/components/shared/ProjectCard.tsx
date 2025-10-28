@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 
 import { ArrowRight, Calendar, Target, Users } from "lucide-react";
 import { motion } from "motion/react";
-import { Project, projectRatings } from "@/data/dummyData";
 import { Badge } from "../ui/badge";
 import StarRating from "./StarRating";
 import { Progress } from "../ui/progress";
+import { Fund, Project } from "@/types";
+import DonationDialog from "./DonationDialog";
 
 interface ProjectCardProps {
   project: Project;
@@ -17,15 +18,23 @@ interface ProjectCardProps {
 }
 
 const ProjectCard = ({ project, showActions = true }: ProjectCardProps) => {
-  const progress = (project.current_funds / project.target_funds) * 100;
-  const projectRatingsList = projectRatings.filter(
-    (r) => r.project_id === project.id
-  );
-  const averageRating =
-    projectRatingsList.length > 0
-      ? projectRatingsList.reduce((sum, r) => sum + r.rating, 0) /
-        projectRatingsList.length
-      : 0;
+  const total_funds_raised = project.funds
+    ? project.funds.reduce((sum: number, fund: Fund) => sum + fund.amount, 0)
+    : 0;
+
+  const tags = project.tags
+    ? project.tags.split(",").map((tag) => tag.trim())
+    : [];
+
+  const progress = (total_funds_raised / project.target_funds) * 100;
+  // const projectRatingsList = projectRatings.filter(
+  //   (r) => r.project_id === project.id
+  // );
+  // const averageRating =
+  //   project.ratings.length > 0
+  //     ? project.ratings.reduce((sum, r) => sum + r.rating, 0) /
+  //       project.ratings.length
+  //     : 0;
 
   return (
     <motion.div
@@ -43,14 +52,14 @@ const ProjectCard = ({ project, showActions = true }: ProjectCardProps) => {
               </h3>
               <div className="flex items-center gap-2 flex-wrap">
                 <Badge variant="outline" className="font-normal">
-                  {project.sector}
+                  {project.sector.title}
                 </Badge>
               </div>
             </div>
           </div>
 
           {/* Rating */}
-          {averageRating > 0 && (
+          {/* {averageRating > 0 && (
             <div className="flex items-center gap-2">
               <StarRating rating={averageRating} readonly size="sm" showValue />
               <span className="text-xs text-muted-foreground">
@@ -58,7 +67,7 @@ const ProjectCard = ({ project, showActions = true }: ProjectCardProps) => {
                 {projectRatingsList.length === 1 ? "review" : "reviews"})
               </span>
             </div>
-          )}
+          )} */}
 
           {/* Description */}
           <p className="text-muted-foreground text-sm line-clamp-3 flex-1">
@@ -70,7 +79,7 @@ const ProjectCard = ({ project, showActions = true }: ProjectCardProps) => {
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">Raised</span>
               <span className="font-semibold text-primary">
-                ₱{project.current_funds.toLocaleString()} / ₱
+                ₱{total_funds_raised.toLocaleString()} / ₱
                 {project.target_funds.toLocaleString()}
               </span>
             </div>
@@ -78,10 +87,7 @@ const ProjectCard = ({ project, showActions = true }: ProjectCardProps) => {
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>{Math.round(progress)}% funded</span>
               <span>
-                ₱
-                {(
-                  project.target_funds - project.current_funds
-                ).toLocaleString()}{" "}
+                ₱{(project.target_funds - total_funds_raised).toLocaleString()}{" "}
                 remaining
               </span>
             </div>
@@ -103,7 +109,7 @@ const ProjectCard = ({ project, showActions = true }: ProjectCardProps) => {
 
           {/* Tags */}
           <div className="flex flex-wrap gap-1.5">
-            {project.tags.slice(0, 3).map((tag) => (
+            {tags.slice(0, 3).map((tag) => (
               <Badge
                 key={tag}
                 variant="secondary"
@@ -112,9 +118,9 @@ const ProjectCard = ({ project, showActions = true }: ProjectCardProps) => {
                 {tag}
               </Badge>
             ))}
-            {project.tags.length > 3 && (
+            {tags.length > 3 && (
               <Badge variant="secondary" className="text-xs font-normal">
-                +{project.tags.length - 3}
+                +{tags.length - 3}
               </Badge>
             )}
           </div>
@@ -127,10 +133,17 @@ const ProjectCard = ({ project, showActions = true }: ProjectCardProps) => {
                   View Details
                 </Button>
               </Link>
-              <Button className="flex-1 bg-gradient-accent hover:opacity-90">
-                <Target className="w-4 h-4 mr-2" />
-                Donate
-              </Button>
+              <DonationDialog
+                projectId={project.id}
+                projectTitle={project.title}
+                bankAccounts={project.bank_details}
+                sectorId={project.sector.id}
+              >
+                <Button className="flex-1 bg-gradient-accent hover:opacity-90">
+                  <Target className="w-4 h-4 mr-2" />
+                  Donate
+                </Button>
+              </DonationDialog>
             </div>
           )}
         </div>
