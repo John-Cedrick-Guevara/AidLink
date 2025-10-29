@@ -6,12 +6,14 @@ export async function POST(req: Request) {
   const event = body.data.attributes;
   const supabase = await createClient();
 
+  console.log("webhook received:", body);
+
   if (event.type === "payment.paid") {
     const paymentData = event.data.attributes;
 
     // Example: update funds table
     await supabase.from("funds").insert({
-      amount: paymentData.amount ,
+      amount: paymentData.amount,
       status: "paid",
       reference_id: paymentData.id,
       user_email: paymentData.billing.email,
