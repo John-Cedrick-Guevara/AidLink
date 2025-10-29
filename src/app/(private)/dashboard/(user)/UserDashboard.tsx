@@ -12,10 +12,11 @@ import ReceiptDialog from "../components/shared/ReceiptDialog";
 import ReceiptsTable from "../components/shared/ReceiptsTable";
 import StatCard from "../components/shared/StatCard";
 
-import { userInitialData } from "../initialFetch/getUserDashboard";
+import { userInitialData } from "../server/getUserDashboard";
 
 import { Project } from "@/types";
 import ProjectCard from "@/components/shared/ProjectCard";
+import { useUser } from "@/components/providers/UserProvider";
 
 export interface UserDashboardProps {
   initialData: userInitialData;
@@ -27,24 +28,13 @@ const UserDashboard = ({ initialData, projects }: UserDashboardProps) => {
     (typeof fundingReceipts)[0] | null
   >(null);
   const [receiptDialogOpen, setReceiptDialogOpen] = useState(false);
+  const { user } = useUser();
 
   // Data
-  const userProjects = projects.filter((p) => p.proposer.id === "u1");
+  const userProjects = projects.filter((p) => p.proposer.id === user?.id);
   const userReceipts = fundingReceipts.filter((receipt) =>
     userProjects.some((p) => p.id === receipt.project_id)
   );
-
-  // // Hooks
-  // const {
-  //   searchQuery,
-  //   selectedSector,
-  //   selectedStatus,
-  //   filteredProjects,
-  //   setSearchQuery,
-  //   setSelectedSector,
-  //   setSelectedStatus,
-  //   clearFilters,
-  // } = useProjectFilters(allProjects);
 
   const handleViewReceipt = (receipt: (typeof fundingReceipts)[0]) => {
     setSelectedReceipt(receipt);
@@ -53,10 +43,10 @@ const UserDashboard = ({ initialData, projects }: UserDashboardProps) => {
 
   return (
     <div className="min-h-screen">
-      <div className="pt-6 pb-16">
+      <div className="pt-26 pb-16">
         <div className="container mx-auto px-4 lg:px-8">
           {/* Header */}
-          <DashboardHeader userName="Maria" />
+          <DashboardHeader userName={user?.full_name || "User"} />
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">

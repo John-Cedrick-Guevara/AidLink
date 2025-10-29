@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Share2, Star } from "lucide-react";
+import { Share2 } from "lucide-react";
 import type { Project } from "@/types";
 import { ProjectProgress } from "./ProjectProgress";
 import { ProjectMeta } from "./ProjectMeta";
@@ -25,49 +25,6 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
       default:
         return "bg-primary/10 text-primary border-primary/20";
     }
-  };
-
-  const calculateAverageRating = () => {
-    if (!project.ratings || project.ratings.length === 0) {
-      return { average: 0, count: 0 };
-    }
-    const total = project.ratings.reduce(
-      (sum, rating) => sum + rating.rating,
-      0
-    );
-    return {
-      average: total / project.ratings.length,
-      count: project.ratings.length,
-    };
-  };
-
-  const renderStars = (rating: number) => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 >= 0.5;
-
-    for (let i = 0; i < 5; i++) {
-      if (i < fullStars) {
-        // Full star
-        stars.push(
-          <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-        );
-      } else if (i === fullStars && hasHalfStar) {
-        // Half star
-        stars.push(
-          <div key={i} className="relative w-4 h-4">
-            <Star className="w-4 h-4 text-gray-300 absolute" />
-            <div className="overflow-hidden absolute w-2">
-              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-            </div>
-          </div>
-        );
-      } else {
-        // Empty star
-        stars.push(<Star key={i} className="w-4 h-4 text-gray-300" />);
-      }
-    }
-    return stars;
   };
 
   const handleShare = async () => {
@@ -99,9 +56,9 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
     <Card className="glass-card p-6 md:p-8">
       <div className="space-y-6">
         {/* Title and Status */}
-        <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div className="flex items-start justify-between gap-4 flex-wrap ">
           <div className="flex-1 min-w-0">
-            <h1 className="text-2xl md:text-3xl font-bold mb-3 break-words">
+            <h1 className="text-2xl md:text-3xl font-bold mb-3 wrap-break-word">
               {project.title}
             </h1>
             <div className="flex items-center gap-3 flex-wrap">
@@ -116,21 +73,7 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
               </Badge>
             </div>
 
-            {/* Average Rating */}
-            {project.ratings && project.ratings.length > 0 && (
-              <div className="flex items-center gap-2 mt-3">
-                <div className="flex items-center gap-1">
-                  {renderStars(calculateAverageRating().average)}
-                </div>
-                <span className="text-sm font-semibold text-foreground">
-                  {calculateAverageRating().average.toFixed(1)}
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  ({calculateAverageRating().count}{" "}
-                  {calculateAverageRating().count === 1 ? "rating" : "ratings"})
-                </span>
-              </div>
-            )}
+      
           </div>
           <Button variant="outline" size="sm" onClick={handleShare}>
             <Share2 className="w-4 h-4 mr-2" />
@@ -153,6 +96,10 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
           </span>
         </div>
 
+
+        <ProjectProgress project={project} />
+        <ProjectMeta project={project} />
+    
         {/* Project Tags */}
         {project.tags && (
           <div className="flex flex-wrap gap-2">
@@ -163,9 +110,6 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
             ))}
           </div>
         )}
-
-        <ProjectProgress project={project} />
-        <ProjectMeta project={project} />
       </div>
     </Card>
   );

@@ -8,7 +8,7 @@ export async function GET() {
     const { data, error } = await supabase
       .from("projects")
       .select(
-        "*, sector (*), bank_details(*), funds (*, user(full_name)), comments(*, user_id(full_name, id)), proposer:users (*), ratings(*)"
+        "*, sector (*), ratings(*), bank_details(*), funds (*, user(full_name)), comments(*, user_id(full_name, id)), proposer:users (*), ratings(*)"
       )
       .order("created_at", { ascending: false });
 

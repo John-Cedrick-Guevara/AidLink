@@ -4,7 +4,9 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Heart, MessageCircle, Users, Calendar } from "lucide-react";
 import type { Project } from "@/types";
-import DonationDialog from "@/components/shared/DonationDialog";
+
+import RatingComponent from "../RatingComponent";
+import { DonationDialog } from "@/components/shared/donation-dialog/DonationDialog";
 
 interface ProjectSidebarProps {
   project: Project;
@@ -47,7 +49,13 @@ export function ProjectSidebar({ project }: ProjectSidebarProps) {
       {/* Project Stats */}
       <Card className="glass-card p-6">
         <h3 className="text-lg font-semibold mb-4">Project Stats</h3>
-        <div className="space-y-4">
+
+        {/* Average Rating */}
+        {project.ratings && project.ratings.length > 0 && (
+          <RatingComponent ratings={project.ratings} />
+        )}
+
+        <div className="space-y-4 mt-4">
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground text-sm flex items-center gap-2">
               <Users className="w-4 h-4" />

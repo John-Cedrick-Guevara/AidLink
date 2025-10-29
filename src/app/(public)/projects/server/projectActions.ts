@@ -7,9 +7,9 @@ export async function getAllProjects() {
   const { data, error } = await supabase
     .from("projects")
     .select(
-      "*, sector (*), bank_details(*), funds (*), comments(*), proposer:users (*)"
-    )
-    .eq("status", "approved");
+      "*, sector (*), bank_details(*), funds (*), comments(*), proposer:users (*), ratings(*)"
+    );
+  // .eq("status", "approved");
 
   if (error) {
     console.error("Error fetching projects:", error);

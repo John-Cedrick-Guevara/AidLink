@@ -8,9 +8,10 @@ import { useRouter } from "next/navigation";
 
 const ProjectForm = () => {
   const router = useRouter();
+  
   return (
     <div className="min-h-screen">
-      <div className="pt-6 pb-16">
+      <div className="pt-26 pb-16">
         <div className="container mx-auto px-4 lg:px-8 max-w-4xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

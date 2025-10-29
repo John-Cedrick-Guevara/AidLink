@@ -7,9 +7,10 @@ import { motion } from "framer-motion";
 
 interface DashboardHeaderProps {
   userName: string;
+  status?: "restricted" | "normal";
 }
 
-const DashboardHeader = ({ userName }: DashboardHeaderProps) => {
+const DashboardHeader = ({ userName, status }: DashboardHeaderProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -25,15 +26,17 @@ const DashboardHeader = ({ userName }: DashboardHeaderProps) => {
             Manage your charity projects and explore new opportunities
           </p>
         </div>
-        <Link href="/proposal-form">
-          <Button
-            size="lg"
-            className="bg-gradient-primary hover:opacity-90 shadow-md"
-          >
-            <PlusCircle className="w-5 h-5 mr-2" />
-            Create New Project
-          </Button>
-        </Link>
+        {status === "normal" && (
+          <Link href="/proposal-form">
+            <Button
+              size="lg"
+              className="bg-gradient-primary hover:opacity-90 shadow-md"
+            >
+              <PlusCircle className="w-5 h-5 mr-2" />
+              Create New Project
+            </Button>
+          </Link>
+        )}
       </div>
     </motion.div>
   );

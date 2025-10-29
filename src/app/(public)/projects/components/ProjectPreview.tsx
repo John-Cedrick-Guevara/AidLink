@@ -1,22 +1,31 @@
 ﻿"use client";
 
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, AlertCircle } from "lucide-react";
+import { ArrowLeft, AlertCircle, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { Project } from "@/types";
 import { ProjectHeader } from "./project-preview/ProjectHeader";
 import { ProjectTabs } from "./project-preview/ProjectTabs";
 import { ProjectSidebar } from "./project-preview/ProjectSidebar";
-import { useProject } from "@/hooks/useProjects";
+import { useProject } from "@/app/(public)/projects/hooks/useProjects";
 
 interface ProjectPreviewProps {
   initialProject: Project | null;
+  showTabs?: boolean;
 }
 
 export default function ProjectPreview({
   initialProject,
+  showTabs = false,
 }: ProjectPreviewProps) {
   const router = useRouter();
 
@@ -95,7 +104,7 @@ export default function ProjectPreview({
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="pb-16">
+      <div className="pb-16 pt-6">
         <div className="container mx-auto px-4 lg:px-8">
           <Button
             variant="ghost"
@@ -109,7 +118,37 @@ export default function ProjectPreview({
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
             <div className="lg:col-span-2 space-y-6">
               <ProjectHeader project={displayProject} />
-              <ProjectTabs project={displayProject} />
+              {showTabs ? (
+                <ProjectTabs project={displayProject} />
+              ) : (
+                <Card className="w-full max-w-sm mx-auto border border-gray-200 shadow-md rounded-2xl bg-linear-to-br from-white to-gray-50 hover:shadow-lg transition-all duration-300">
+                  <CardHeader className="text-center">
+                    <div className="flex justify-center mb-3">
+                      <div className="p-3 bg-blue-100 rounded-full">
+                        <Lock className="w-6 h-6 text-blue-600" />
+                      </div>
+                    </div>
+                    <CardTitle className="text-lg font-semibold text-gray-900">
+                      Log in to see more details
+                    </CardTitle>
+                    <CardDescription className="text-gray-500 text-sm mt-1">
+                      Access your personalized dashboard and explore more
+                      content.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex justify-center mt-2">
+                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">
+                      Log In
+                    </Button>
+                  </CardContent>
+                  <CardFooter className="text-center text-xs text-gray-400 mt-1">
+                    Don’t have an account?{" "}
+                    <a href="/signup" className="text-blue-600 hover:underline">
+                      Sign up
+                    </a>
+                  </CardFooter>
+                </Card>
+              )}
             </div>
 
             <div className="lg:col-span-1">

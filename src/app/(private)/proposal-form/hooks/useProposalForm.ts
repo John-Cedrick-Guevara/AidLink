@@ -2,7 +2,10 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import type { BankAccount, ProposalFormData } from "../types";
-import { handleCreateProject, handleGetSectors } from "../server/server";
+import {
+  handleCreateProject,
+  handleGetSectors,
+} from "../server/proposalActions";
 
 export const useProposalForm = () => {
   const router = useRouter();
@@ -150,32 +153,7 @@ export const useProposalForm = () => {
 
     startTransition(async () => {
       try {
-        // Create FormData object
-        const formDataToSend = new FormData();
-
-        // Append text fields
-        formDataToSend.append("title", formData.title);
-        formDataToSend.append("description", formData.description);
-        formDataToSend.append("sector", formData.sector);
-        formDataToSend.append("team_size", formData.team_size);
-        formDataToSend.append("expected_outcome", formData.expected_outcome);
-        formDataToSend.append("potential_risks", formData.potential_risks);
-        formDataToSend.append("target_funds", formData.target_funds);
-        formDataToSend.append("target_start_date", formData.target_start_date);
-        formDataToSend.append("tags", formData.tags);
-
-        // Append bank accounts as JSON string (can't send objects directly)
-        formDataToSend.append(
-          "bank_accounts",
-          JSON.stringify(formData.bank_accounts)
-        );
-
-        // Append files
-        formData.supporting_docs.forEach((file) => {
-          formDataToSend.append("supporting_docs", file);
-        });
-
-        const result = await handleCreateProject(formDataToSend);
+        const result = await handleCreateProject(formData);
 
         if (result.success) {
           toast.success(result.message, {
@@ -193,7 +171,6 @@ export const useProposalForm = () => {
       }
     });
   };
-
 
   return {
     currentStep,

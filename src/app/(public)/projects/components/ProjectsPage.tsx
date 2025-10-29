@@ -4,15 +4,18 @@ import ProjectCard from "@/components/shared/ProjectCard";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
-import { useProjects } from "@/hooks/useProjects";
+import { useProjects } from "@/app/(public)/projects/hooks/useProjects";
 import { Project } from "@/types";
 import { motion } from "framer-motion";
-import { PlusCircle, AlertCircle } from "lucide-react";
+import { PlusCircle, AlertCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import Navbar from "@/components/layout/Navbar";
 
 const ProjectsPage = ({ initialProjects }: { initialProjects: Project[] }) => {
   // Use SWR with initial data from server
   const { projects, isLoading, error } = useProjects(initialProjects);
+  const router = useRouter();
 
   // Error state
   if (error) {
@@ -55,6 +58,16 @@ const ProjectsPage = ({ initialProjects }: { initialProjects: Project[] }) => {
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-6">
+
+      <Navbar/>
+      <Button
+        variant="ghost"
+        className="mb-4"
+        onClick={() => router.push("/projects")}
+      >
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Back
+      </Button>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

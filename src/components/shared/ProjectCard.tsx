@@ -10,7 +10,9 @@ import { Badge } from "../ui/badge";
 import StarRating from "./StarRating";
 import { Progress } from "../ui/progress";
 import { Fund, Project } from "@/types";
-import DonationDialog from "./DonationDialog";
+
+import RatingComponent from "@/app/(public)/projects/components/RatingComponent";
+import { DonationDialog } from "./donation-dialog/DonationDialog";
 
 interface ProjectCardProps {
   project: Project;
@@ -18,6 +20,7 @@ interface ProjectCardProps {
 }
 
 const ProjectCard = ({ project, showActions = true }: ProjectCardProps) => {
+
   const total_funds_raised = project.funds
     ? project.funds.reduce((sum: number, fund: Fund) => sum + fund.amount, 0)
     : 0;
@@ -27,14 +30,7 @@ const ProjectCard = ({ project, showActions = true }: ProjectCardProps) => {
     : [];
 
   const progress = (total_funds_raised / project.target_funds) * 100;
-  // const projectRatingsList = projectRatings.filter(
-  //   (r) => r.project_id === project.id
-  // );
-  // const averageRating =
-  //   project.ratings.length > 0
-  //     ? project.ratings.reduce((sum, r) => sum + r.rating, 0) /
-  //       project.ratings.length
-  //     : 0;
+
 
   return (
     <motion.div
@@ -58,16 +54,10 @@ const ProjectCard = ({ project, showActions = true }: ProjectCardProps) => {
             </div>
           </div>
 
-          {/* Rating */}
-          {/* {averageRating > 0 && (
-            <div className="flex items-center gap-2">
-              <StarRating rating={averageRating} readonly size="sm" showValue />
-              <span className="text-xs text-muted-foreground">
-                ({projectRatingsList.length}{" "}
-                {projectRatingsList.length === 1 ? "review" : "reviews"})
-              </span>
-            </div>
-          )} */}
+          {/* Average Rating */}
+          {project.ratings && project.ratings.length > 0 && (
+            <RatingComponent ratings={project.ratings} />
+          )}
 
           {/* Description */}
           <p className="text-muted-foreground text-sm line-clamp-3 flex-1">
