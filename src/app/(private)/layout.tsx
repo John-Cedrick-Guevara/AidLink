@@ -5,13 +5,13 @@ import { createClient } from "@/lib/supabase/supabaseServer";
 import React from "react";
 
 const layout = async ({ children }: { children: React.ReactNode }) => {
-
   return (
     <>
-        <Navbar/>
+      <UserProvider>
+        <Navbar />
         <div>{children}</div>
         <Footer />
-      
+      </UserProvider>
     </>
   );
 };

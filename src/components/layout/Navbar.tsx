@@ -16,8 +16,6 @@ import { useUser } from "../providers/UserProvider";
 
 const Navbar = () => {
   const { user, logOut } = useUser();
-  const currentPath = usePathname();
-  console.log(user);
 
   const landingNavlinks = [
     { href: "#about", label: "About" },
