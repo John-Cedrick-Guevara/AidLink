@@ -37,6 +37,7 @@ const AdminReceiptDialog = ({
           <DialogDescription>
             Review the funding receipt information
           </DialogDescription>
+
         </DialogHeader>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -97,16 +98,32 @@ const AdminReceiptDialog = ({
             )}
           </div>
           <div>
-            <Label className="text-muted-foreground text-sm">
+            <Label className="text-muted-foreground text-sm mb-2 block">
               Receipt Document
             </Label>
-            <div className="mt-2 p-4 border border-border rounded-lg bg-muted/30">
-              <p className="text-sm text-muted-foreground">
-                Receipt: {receipt.receipt_url}
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                View and download the receipt document
-              </p>
+            <div className="mt-2 border border-border rounded-lg bg-muted/30 overflow-hidden">
+              <div className="relative w-full">
+                <img
+                  src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/donation_receipts/${receipt.receipt_url}`}
+                  alt="Receipt"
+                  className="w-full h-auto object-contain max-h-96"
+                  onError={(e) => {
+                    // Fallback if image fails to load
+                    e.currentTarget.style.display = "none";
+                    const fallback = e.currentTarget
+                      .nextElementSibling as HTMLElement;
+                    if (fallback) fallback.style.display = "block";
+                  }}
+                />
+                <div className="hidden p-4">
+                  <p className="text-sm text-muted-foreground">
+                    Receipt: {receipt.receipt_url}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Unable to display image preview
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
           {receipt.status === "pending" && (

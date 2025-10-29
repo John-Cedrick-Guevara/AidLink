@@ -12,6 +12,7 @@ interface PaymentMethodTabsProps {
   bankAccounts: BankAccount[];
   onPaymentMethodChange: (method: PaymentMethod) => void;
   onEmailChange: (email: string) => void;
+  onReceiptFileSelect?: (file: File | null) => void;
 }
 
 export const PaymentMethodTabs = ({
@@ -20,6 +21,7 @@ export const PaymentMethodTabs = ({
   bankAccounts,
   onPaymentMethodChange,
   onEmailChange,
+  onReceiptFileSelect,
 }: PaymentMethodTabsProps) => {
   return (
     <Tabs
@@ -47,7 +49,10 @@ export const PaymentMethodTabs = ({
 
       {/* Bank Transfer Tab */}
       <TabsContent value="manual" className="space-y-4 mt-4">
-        <BankAccountList bankAccounts={bankAccounts} />
+        <BankAccountList
+          bankAccounts={bankAccounts}
+          onFileSelect={onReceiptFileSelect}
+        />
       </TabsContent>
     </Tabs>
   );

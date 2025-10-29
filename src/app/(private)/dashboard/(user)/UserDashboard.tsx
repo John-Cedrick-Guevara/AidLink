@@ -4,6 +4,7 @@ import { useState } from "react";
 import { dummyProjects, sectors, fundingReceipts } from "@/data/dummyData";
 import { motion } from "framer-motion";
 import { FolderOpen, TrendingUp, Heart, Activity } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import DashboardHeader from "../components/shared/DashboardHeader";
 import EmptyState from "../components/shared/EmptyState";
@@ -12,23 +13,36 @@ import ReceiptDialog from "../components/shared/ReceiptDialog";
 import ReceiptsTable from "../components/shared/ReceiptsTable";
 import StatCard from "../components/shared/StatCard";
 
-import { userInitialData } from "../server/getUserDashboard";
+import { userInitialData } from "./server/getUserDashboard";
 
-import { Project } from "@/types";
+import { FundSummary, Project } from "@/types";
 import ProjectCard from "@/components/shared/ProjectCard";
 import { useUser } from "@/components/providers/UserProvider";
+import { useReceiptActions } from "./hooks/receiptHooks";
 
 export interface UserDashboardProps {
   initialData: userInitialData;
   projects: Project[];
+  receipts: FundSummary[] | null;
 }
 
-const UserDashboard = ({ initialData, projects }: UserDashboardProps) => {
-  const [selectedReceipt, setSelectedReceipt] = useState<
-    (typeof fundingReceipts)[0] | null
-  >(null);
+const UserDashboard = ({
+  initialData,
+  projects,
+  receipts,
+}: UserDashboardProps) => {
+  const [selectedReceipt, setSelectedReceipt] = useState<FundSummary | null>(
+    null
+  );
   const [receiptDialogOpen, setReceiptDialogOpen] = useState(false);
   const { user } = useUser();
+
+  // Receipt actions hook
+  const { isPending, handleMarkAsPaid } = useReceiptActions({
+    onSuccess: () => {
+      setReceiptDialogOpen(false);
+    },
+  });
 
   // Data
   const userProjects = projects.filter((p) => p.proposer.id === user?.id);
@@ -36,7 +50,7 @@ const UserDashboard = ({ initialData, projects }: UserDashboardProps) => {
     userProjects.some((p) => p.id === receipt.project_id)
   );
 
-  const handleViewReceipt = (receipt: (typeof fundingReceipts)[0]) => {
+  const handleViewReceipt = (receipt: FundSummary) => {
     setSelectedReceipt(receipt);
     setReceiptDialogOpen(true);
   };
@@ -108,7 +122,7 @@ const UserDashboard = ({ initialData, projects }: UserDashboardProps) => {
               <h2 className="text-2xl font-bold">My Funding Receipts</h2>
             </div>
             <ReceiptsTable
-              receipts={userReceipts}
+              receipts={receipts}
               onViewReceipt={handleViewReceipt}
             />
           </motion.div>
@@ -151,6 +165,8 @@ const UserDashboard = ({ initialData, projects }: UserDashboardProps) => {
         receipt={selectedReceipt}
         open={receiptDialogOpen}
         onOpenChange={setReceiptDialogOpen}
+        onMarkAsPaid={handleMarkAsPaid}
+        isMarkingAsPaid={isPending}
       />
     </div>
   );

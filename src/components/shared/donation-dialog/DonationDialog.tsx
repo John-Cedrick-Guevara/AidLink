@@ -24,32 +24,28 @@ export const DonationDialog = ({
   children,
   sectorId,
 }: DonationDialogProps) => {
-  // ============================================================================
   // Custom Hook for Form Management
-  // ============================================================================
 
   const {
     amount,
     email,
     paymentMethod,
     isProcessing,
+    receiptFile,
     setAmount,
     setEmail,
     setPaymentMethod,
     handleSubmit,
     resetForm,
     handlePresetAmount,
+    handleReceiptFileSelect,
   } = useDonationForm({ projectId, sectorId });
 
-  // ============================================================================
   // Local State for Dialog
-  // ============================================================================
 
   const [open, setOpen] = useState(false);
 
-  // ============================================================================
   // Event Handlers
-  // ============================================================================
 
   const handleOpenChange = useCallback(
     (isOpen: boolean) => {
@@ -68,9 +64,7 @@ export const DonationDialog = ({
     }
   }, [handleSubmit]);
 
-  // ============================================================================
   // Render
-  // ============================================================================
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -109,6 +103,7 @@ export const DonationDialog = ({
             bankAccounts={bankAccounts}
             onPaymentMethodChange={setPaymentMethod}
             onEmailChange={setEmail}
+            onReceiptFileSelect={handleReceiptFileSelect}
           />
 
           {/* Action Buttons */}

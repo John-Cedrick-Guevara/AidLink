@@ -45,25 +45,3 @@ export const processDirectPayment = async (
   window.location.href = paymentUrl.toString();
 };
 
-/**
- * Process a bank transfer donation
- */
-export const processBankTransfer = async (
-  data: DonationFormData,
-  projectId: string
-): Promise<void> => {
-  // TODO: Create pending donation record in database
-  // Example implementation:
-  // await fetch("/api/donations/create-pending", {
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify({
-  //     projectId,
-  //     amount: data.amount,
-  //     method: "bank_transfer",
-  //   }),
-  // });
-
-  // For now, just return successfully
-  return Promise.resolve();
-};

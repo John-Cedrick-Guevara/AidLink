@@ -1,18 +1,26 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Building2, Copy, Check } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Building2, Copy, Check, Upload, X, FileImage } from "lucide-react";
 import { toast } from "sonner";
 import type { BankAccount } from "./types";
 
 interface BankAccountListProps {
   bankAccounts: BankAccount[];
+  onFileSelect?: (file: File | null) => void;
 }
 
-export const BankAccountList = ({ bankAccounts }: BankAccountListProps) => {
+export const BankAccountList = ({
+  bankAccounts,
+  onFileSelect,
+}: BankAccountListProps) => {
   const [copiedAccount, setCopiedAccount] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleCopyAccount = useCallback((accountNumber: string) => {
     navigator.clipboard.writeText(accountNumber);
@@ -23,6 +31,71 @@ export const BankAccountList = ({ bankAccounts }: BankAccountListProps) => {
     });
 
     setTimeout(() => setCopiedAccount(null), 2000);
+  }, []);
+
+  const handleFileChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+
+      if (!file) return;
+
+      // Validate file type
+      const validTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/webp",
+        "application/pdf",
+      ];
+      if (!validTypes.includes(file.type)) {
+        toast.error("Invalid file type", {
+          description: "Please upload an image (JPG, PNG, WEBP) or PDF file",
+        });
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        toast.error("File too large", {
+          description: "Please upload a file smaller than 5MB",
+        });
+        return;
+      }
+
+      setSelectedFile(file);
+      onFileSelect?.(file);
+
+      // Create preview for images
+      if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPreviewUrl(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        setPreviewUrl(null);
+      }
+
+      toast.success("Receipt uploaded!", {
+        description: file.name,
+      });
+    },
+    [onFileSelect]
+  );
+
+  const handleRemoveFile = useCallback(() => {
+    setSelectedFile(null);
+    setPreviewUrl(null);
+    onFileSelect?.(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    toast.info("Receipt removed");
+  }, [onFileSelect]);
+
+  const handleUploadClick = useCallback(() => {
+    fileInputRef.current?.click();
   }, []);
 
   if (bankAccounts.length === 0) {
@@ -96,6 +169,84 @@ export const BankAccountList = ({ bankAccounts }: BankAccountListProps) => {
         ))}
       </div>
 
+      {/* File Upload Section */}
+      <Card className="p-4 bg-primary/5 border-primary/20">
+        <div className="space-y-3">
+          <Label htmlFor="receipt-upload" className="text-sm font-semibold">
+            Upload Proof of Payment
+          </Label>
+
+          <input
+            ref={fileInputRef}
+            id="receipt-upload"
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/webp,application/pdf"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+
+          {!selectedFile ? (
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full h-24 border-dashed border-2 hover:bg-primary/5 hover:border-primary"
+              onClick={handleUploadClick}
+            >
+              <div className="flex flex-col items-center gap-2">
+                <Upload className="w-6 h-6 text-muted-foreground" />
+                <div className="text-center">
+                  <p className="text-sm font-medium">Click to upload receipt</p>
+                  <p className="text-xs text-muted-foreground">
+                    JPG, PNG, WEBP or PDF (max 5MB)
+                  </p>
+                </div>
+              </div>
+            </Button>
+          ) : (
+            <div className="relative border-2 border-primary/20 rounded-lg p-3 bg-background">
+              <div className="flex items-start gap-3">
+                {previewUrl ? (
+                  <div className="relative w-16 h-16 rounded-md overflow-hidden bg-muted shrink-0">
+                    <img
+                      src={previewUrl}
+                      alt="Receipt preview"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-16 h-16 rounded-md bg-muted flex items-center justify-center shrink-0">
+                    <FileImage className="w-8 h-8 text-muted-foreground" />
+                  </div>
+                )}
+
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">
+                    {selectedFile.name}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {(selectedFile.size / 1024).toFixed(1)} KB
+                  </p>
+                </div>
+
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0 shrink-0"
+                  onClick={handleRemoveFile}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+
+          <p className="text-xs text-muted-foreground">
+            📸 Upload a clear photo of your bank transfer receipt or screenshot
+          </p>
+        </div>
+      </Card>
+
       {/* Instructions Card */}
       <Card className="p-4 bg-warning/5 border-warning/30">
         <div className="space-y-2">
@@ -106,9 +257,7 @@ export const BankAccountList = ({ bankAccounts }: BankAccountListProps) => {
           <ul className="text-xs text-muted-foreground space-y-1 ml-7">
             <li>• Transfer the exact amount to one of the listed accounts</li>
             <li>• Take a clear photo or screenshot of the receipt</li>
-            <li>
-              • Send the proof of payment to the project team for verification
-            </li>
+            <li>• Upload the proof of payment above for faster verification</li>
             <li>
               • Your donation will be credited within 24-48 hours after
               verification
