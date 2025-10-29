@@ -20,29 +20,6 @@ export async function POST(req: Request) {
       );
     }
 
-    const { data: paymentData, error: paymentError } = await supabase
-      .from("funds")
-      .insert({
-        user: user?.id,
-        project: projectId,
-        sector: sectorId,
-        amount: amount,
-        method: "direct_paymongo",
-        status: "pending",
-      })
-      .select()
-      .single();
-
-    if (paymentError) {
-      console.error(paymentError);
-      return NextResponse.json(
-        { success: false, message: paymentError.message },
-        { status: 400 }
-      );
-    }
-
-    console.log(paymentData);
-
     // Clean the secret key (remove any whitespace)
     const cleanSecretKey = secretKey.trim();
 
@@ -60,9 +37,9 @@ export async function POST(req: Request) {
           description,
           statement_descriptor: "AidlLink Donation",
           metadata: {
-            transaction_id: paymentData.id,
-            project_id: paymentData.project,
-            user_id: paymentData.user,
+            sector_id: sectorId,
+            project_id: projectId,
+            user_id: user?.id,
           },
         },
       },
