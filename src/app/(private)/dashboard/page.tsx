@@ -1,13 +1,14 @@
 import { createClient } from "@/lib/supabase/supabaseServer";
 import { redirect } from "next/navigation";
 
-import { getUserInitialData } from "./server/getUserDashboard";
+import { getUserInitialData } from "./(user)/server/getUserDashboard";
 import AdminDashboard from "./(admin)/AdminDashboard";
 import UserDashboard from "./(user)/UserDashboard";
 import { getAllUsersForAdmin } from "./(admin)/server/usersActions";
 import { getAllSectorsForAdmin } from "./(admin)/server/sectorActions";
 import { getAllProjectsForAdmin } from "./(admin)/server/projectActions";
-import { getAllProjects } from "@/app/(public)/projects/server/projectActions";
+import { getAllProjects, getProjectReceipts } from "@/app/(public)/projects/server/projectActions";
+import { FundSummary } from "@/types";
 
 const page = async () => {
   const supabase = await createClient();
@@ -35,8 +36,10 @@ const page = async () => {
     // Redirect to user dashboard
     const dashboardData = await getUserInitialData(user?.id);
     const projects = await getAllProjects();
+    const receipts = await getProjectReceipts(user.id);
 
-    return <UserDashboard initialData={dashboardData} projects={projects} />;
+console.log(receipts);
+    return <UserDashboard initialData={dashboardData} projects={projects} receipts={receipts as any}/>;
   }
 };
 

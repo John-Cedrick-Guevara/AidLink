@@ -7,10 +7,11 @@ import { TableRow, TableCell } from "@/components/ui/table";
 import { Eye, Receipt } from "lucide-react";
 import { FundingReceipt } from "@/data/dummyData";
 import TableUI from "@/components/shared/TableUI";
+import { FundSummary } from "@/types";
 
 interface ReceiptsTableProps {
-  receipts: FundingReceipt[];
-  onViewReceipt: (receipt: FundingReceipt) => void;
+  receipts: FundSummary[] | null;
+  onViewReceipt: (receipt: FundSummary) => void;
 }
 
 const getStatusBadgeClass = (status: string) => {
@@ -27,7 +28,7 @@ const getStatusBadgeClass = (status: string) => {
 };
 
 const ReceiptsTable = ({ receipts, onViewReceipt }: ReceiptsTableProps) => {
-  if (receipts.length === 0) {
+  if (receipts?.length === 0) {
     return (
       <Card className="glass-card p-6">
         <div className="text-center py-8 text-muted-foreground">
@@ -38,11 +39,11 @@ const ReceiptsTable = ({ receipts, onViewReceipt }: ReceiptsTableProps) => {
     );
   }
 
-  const renderRow = (receipt: FundingReceipt, index: number) => (
+  const renderRow = (receipt: FundSummary, index: number) => (
     <TableRow key={index} className="hover:bg-muted/30 my-2">
       {/* 💻 Desktop View */}
       <TableCell className="hidden lg:table-cell">
-        <div className="font-medium">{receipt.project_title}</div>
+        <div className="font-medium">{receipt.project.title}</div>
       </TableCell>
 
       <TableCell className="hidden lg:table-cell font-semibold">
@@ -50,7 +51,7 @@ const ReceiptsTable = ({ receipts, onViewReceipt }: ReceiptsTableProps) => {
       </TableCell>
 
       <TableCell className="hidden lg:table-cell">
-        {receipt.donor_name}
+        {receipt.user.full_name}
       </TableCell>
 
       <TableCell className="hidden lg:table-cell">
@@ -60,7 +61,7 @@ const ReceiptsTable = ({ receipts, onViewReceipt }: ReceiptsTableProps) => {
       </TableCell>
 
       <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">
-        {new Date(receipt.submitted_at).toLocaleDateString()}
+        {new Date(receipt.created_at).toLocaleDateString()}
       </TableCell>
 
       <TableCell className="hidden lg:table-cell text-right">
@@ -79,7 +80,7 @@ const ReceiptsTable = ({ receipts, onViewReceipt }: ReceiptsTableProps) => {
           {/* Header */}
           <div className="flex items-start justify-between mb-3">
             <div className="font-semibold text-base whitespace-normal flex-1 pr-2">
-              {receipt.project_title}
+              {receipt.project.title}
             </div>
             <Badge className={getStatusBadgeClass(receipt.status)}>
               {receipt.status.charAt(0).toUpperCase() + receipt.status.slice(1)}
@@ -96,12 +97,12 @@ const ReceiptsTable = ({ receipts, onViewReceipt }: ReceiptsTableProps) => {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Donor</p>
-              <p className="font-medium">{receipt.donor_name}</p>
+              <p className="font-medium">{receipt.user.full_name}</p>
             </div>
             <div className="col-span-2">
               <p className="text-xs text-muted-foreground">Submitted Date</p>
               <p className="font-medium">
-                {new Date(receipt.submitted_at).toLocaleDateString("en-US", {
+                {new Date(receipt.created_at).toLocaleDateString("en-US", {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
@@ -130,7 +131,7 @@ const ReceiptsTable = ({ receipts, onViewReceipt }: ReceiptsTableProps) => {
     <Card className="glass-card p-6">
       <div className="rounded-lg border border-border/50 overflow-hidden">
         <TableUI
-          items={receipts}
+          items={receipts || []}
           tableHeads={[
             "Project",
             "Amount",

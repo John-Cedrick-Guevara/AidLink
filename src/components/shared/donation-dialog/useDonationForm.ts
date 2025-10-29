@@ -3,8 +3,9 @@
 import { useState, useCallback } from "react";
 import { toast } from "sonner";
 import { validateEmailWithError, validateAmount } from "@/lib/validations";
-import { processDirectPayment, processBankTransfer } from "./services";
+import { processDirectPayment } from "./services";
 import type { PaymentMethod, DonationFormData } from "./types";
+import { uploadReceipt } from "./server/RecieptUploadAction";
 
 interface UseDonationFormProps {
   projectId: string;
@@ -19,6 +20,7 @@ export const useDonationForm = ({
   const [email, setEmail] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("direct");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
 
   const validateForm = useCallback((): boolean => {
     // Validate amount
@@ -62,9 +64,31 @@ export const useDonationForm = ({
       if (paymentMethod === "direct") {
         await processDirectPayment(donationData, projectId, sectorId);
       } else {
-        await processBankTransfer(donationData, projectId);
-        toast.success("Instructions sent!", {
-          description: `Transfer ₱${donationData.amount.toLocaleString()} to one of the listed bank accounts`,
+        // Validate receipt file exists
+        if (!receiptFile) {
+          toast.error("Receipt required", {
+            description: "Please upload a receipt for bank transfer",
+          });
+          return false;
+        }
+
+        // Create FormData to pass file to server action
+        const formData = new FormData();
+        formData.append("file", receiptFile);
+        formData.append("amount", donationData.amount.toString());
+        formData.append("projectId", projectId);
+        formData.append("sectorId", sectorId);
+
+        const uploadResult = await uploadReceipt(formData);
+        if (!uploadResult.success) {
+          toast.error("Receipt upload failed", {
+            description: uploadResult.message,
+          });
+          return false;
+        }
+
+        toast.success("Donation submitted!", {
+          description: `Your donation of ₱${donationData.amount.toLocaleString()} is pending verification`,
         });
       }
 
@@ -89,6 +113,7 @@ export const useDonationForm = ({
     setEmail("");
     setPaymentMethod("direct");
     setIsProcessing(false);
+    setReceiptFile(null);
   }, []);
 
   /**
@@ -98,12 +123,20 @@ export const useDonationForm = ({
     setAmount(preset.toString());
   }, []);
 
+  /**
+   * Handle receipt file selection
+   */
+  const handleReceiptFileSelect = useCallback((file: File | null) => {
+    setReceiptFile(file);
+  }, []);
+
   return {
     // State
     amount,
     email,
     paymentMethod,
     isProcessing,
+    receiptFile,
     // Setters
     setAmount,
     setEmail,
@@ -112,5 +145,6 @@ export const useDonationForm = ({
     handleSubmit,
     resetForm,
     handlePresetAmount,
+    handleReceiptFileSelect,
   };
 };

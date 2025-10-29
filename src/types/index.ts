@@ -44,6 +44,27 @@ export interface Fund {
   updated_at: string;
 }
 
+export interface FundSummary {
+  amount: number;
+  id: string;
+  method: string;
+  receipt_url: string;
+  status: string;
+  created_at: string;
+
+  project: {
+    title: string;
+    proposer: string;
+  };
+  
+  
+  user: {
+    email: string;
+    full_name: string;
+    id: string;
+  };
+}
+
 export interface Comment {
   id: string;
   content: string;
