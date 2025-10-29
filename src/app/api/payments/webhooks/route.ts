@@ -36,6 +36,10 @@ export async function POST(req: Request) {
         return new Response("Supabase update error", { status: 500 });
       }
 
+      await supabase.from("debug_logs").insert({
+        message: "Payment webhook received",
+      });
+
       console.log(`✅ Updated transaction ${metadata.transaction_id}`);
     }
 
