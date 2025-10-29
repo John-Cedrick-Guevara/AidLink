@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     console.log("Webhook received:", { eventType, metadata, amount, status });
 
     // Example update in Supabase
-    if (metadata?.transaction_id) {
+    if (status === "paid") {
       const supabase = await createClient();
 
       const { data: paymentData, error: paymentError } = await supabase
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
           user: metadata?.user_id,
           project: metadata?.project_id,
           sector: metadata?.sector_id,
-          amount: amount,
+          amount: amount / 100, // convert centavos to pesos
           method: "direct_paymongo",
           status: "paid",
         })
