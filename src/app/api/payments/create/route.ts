@@ -41,6 +41,8 @@ export async function POST(req: Request) {
       );
     }
 
+    console.log(paymentData);
+
     // Clean the secret key (remove any whitespace)
     const cleanSecretKey = secretKey.trim();
 

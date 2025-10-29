@@ -24,13 +24,17 @@ export async function POST(req: Request) {
     if (metadata?.transaction_id) {
       const supabase = await createClient();
 
-      await supabase
+      const { error } = await supabase
         .from("funds")
         .update({
           status: "paid",
-          updated_at: new Date().toISOString(),
         })
         .eq("id", metadata.transaction_id);
+
+      if (error) {
+        console.error("Supabase update error:", error);
+        return new Response("Supabase update error", { status: 500 });
+      }
 
       console.log(`✅ Updated transaction ${metadata.transaction_id}`);
     }
