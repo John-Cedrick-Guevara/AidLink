@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/supabaseServer";
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
@@ -15,7 +16,7 @@ export async function POST(req: Request) {
     }
 
     const metadata = paymentData.metadata;
-    const amount = paymentData.amount / 100;
+    const amount = paymentData.amount;
     const status = paymentData.status;
 
     console.log("Webhook received:", { eventType, metadata, amount, status });
@@ -24,28 +25,36 @@ export async function POST(req: Request) {
     if (metadata?.transaction_id) {
       const supabase = await createClient();
 
-      const { error } = await supabase
+      const { data: paymentData, error: paymentError } = await supabase
         .from("funds")
-        .update({
+        .insert({
+          user: metadata?.user_id,
+          project: metadata?.project_id,
+          sector: metadata?.sector_id,
+          amount: amount,
+          method: "direct_paymongo",
           status: "paid",
         })
-        .eq("id", metadata.transaction_id);
+        .select()
+        .single();
 
-      if (error) {
-        console.error("Supabase update error:", error);
-        return new Response("Supabase update error", { status: 500 });
+      if (paymentError) {
+        console.error(paymentError);
+        return NextResponse.json(
+          { success: false, message: paymentError.message },
+          { status: 400 }
+        );
       }
-
-      await supabase.from("debug_logs").insert({
-        message: "Payment webhook received",
-      });
 
       console.log(`✅ Updated transaction ${metadata.transaction_id}`);
     }
 
-    return new Response("OK", { status: 200 });
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
     console.error("Error handling webhook:", error);
-    return new Response("Error", { status: 500 });
+    return NextResponse.json(
+      { success: false, message: (error as Error).message },
+      { status: 500 }
+    );
   }
 }
