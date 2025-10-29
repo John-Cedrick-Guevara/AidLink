@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/supabaseServer";
+import { revalidatePath } from "next/cache";
 
 export async function getAllUsersForAdmin() {
   const supabase = await createClient();
@@ -28,5 +29,7 @@ export async function restrictUser(
       message: `Error updating user status: ${error.message}`,
     };
   }
+
+  revalidatePath("/dashboard");
   return { success: true, message: `User has been ${action}ed successfully` };
 }

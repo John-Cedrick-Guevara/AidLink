@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/supabaseServer";
 import { redirect } from "next/navigation";
 
-import { getUserInitialData } from "./initialFetch/getUserDashboard";
+import { getUserInitialData } from "./server/getUserDashboard";
 import AdminDashboard from "./(admin)/AdminDashboard";
 import UserDashboard from "./(user)/UserDashboard";
 import { getAllUsersForAdmin } from "./(admin)/server/usersActions";

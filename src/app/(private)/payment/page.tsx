@@ -17,7 +17,7 @@
  * - Validation utilities for form validation
  */
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   LoadingState,
@@ -27,7 +27,7 @@ import {
 } from "./components";
 import { usePaymentProcessor, usePaymentForm, useProjectData } from "./hooks";
 
-export default function PaymentPage() {
+function PaymentPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -118,5 +118,13 @@ export default function PaymentPage() {
       onSelectPayMaya={handlePayMayaPayment}
       onCancel={handleCancel}
     />
+  );
+}
+
+export default function PaymentPage() {
+  return (
+    <Suspense fallback={<LoadingState />}>
+      <PaymentPageContent />
+    </Suspense>
   );
 }

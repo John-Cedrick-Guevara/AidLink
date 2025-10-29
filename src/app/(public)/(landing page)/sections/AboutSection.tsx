@@ -6,7 +6,7 @@ const AboutSection = () => {
   return (
     <section
       id="about"
-      className="py-20 bg-linear-to-br from-secondary/30 to-background"
+      className="py-20 bg-linear-to-br from-secondary/30 to-background smooth-scroll"
     >
       <div className="container mx-auto px-4 lg:px-8">
         <motion.div

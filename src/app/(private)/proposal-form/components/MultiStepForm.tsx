@@ -1,6 +1,6 @@
 "use client";
 import { Card } from "@/components/ui/card";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { FileText, Target, DollarSign, Upload } from "lucide-react";
 
 // Components
@@ -54,7 +54,12 @@ const MultiStepProjectForm = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="space-y-6"
+    >
       {/* Progress Bar */}
       <FormProgressBar
         currentStep={currentStep}
@@ -84,7 +89,7 @@ const MultiStepProjectForm = () => {
           isPending={isPending}
         />
       </Card>
-    </div>
+    </motion.div>
   );
 };
 

@@ -15,7 +15,7 @@ import { BookOpen, Loader2 } from "lucide-react";
 
 import type { FormStepProps } from "../../types";
 import { useEffect, useState } from "react";
-import { handleGetSectors } from "../../server/server";
+import { handleGetSectors } from "../../server/proposalActions";
 import { Sector } from "@/types";
 
 const Step1GeneralInfo = ({

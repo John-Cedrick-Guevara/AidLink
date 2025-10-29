@@ -12,7 +12,6 @@ export async function POST(req: Request) {
         { status: 500 }
       );
     }
-    
 
     // Extract payment intent ID from client key
     // Client key format: pi_xxxxx_client_yyyyy

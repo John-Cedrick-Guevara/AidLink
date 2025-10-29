@@ -99,11 +99,7 @@ export function useProject(
 
           // Optimistic update
           mutate(
-            // (currentProject) => {
-            //   if (!currentProject) return undefined;
-            //   return { ...currentProject, ...updatedData };
-            // },
-            // { revalidate: false }
+ 
           );
         }
       )

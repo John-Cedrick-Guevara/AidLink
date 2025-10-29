@@ -100,3 +100,126 @@ export type UpdateProjectStatusInput = z.infer<
 >;
 export type CreateDonationInput = z.infer<typeof CreateDonationSchema>;
 export type UpdateUserProfileInput = z.infer<typeof UpdateUserProfileSchema>;
+
+// ============================================================================
+// Shared Validation Utilities (Non-Zod)
+// ============================================================================
+
+/**
+ * Regular expressions for common validations
+ */
+export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const PHILIPPINE_PHONE_REGEX = /^(09|\+639)\d{9}$/;
+
+/**
+ * Email validation utilities
+ */
+export const validateEmail = (email: string): boolean => {
+  return EMAIL_REGEX.test(email.trim());
+};
+
+export const validateEmailWithError = (
+  email: string
+): { valid: boolean; error?: string } => {
+  if (!email.trim()) {
+    return { valid: false, error: "Please enter your email address" };
+  }
+
+  if (!validateEmail(email)) {
+    return { valid: false, error: "Please enter a valid email address" };
+  }
+
+  return { valid: true };
+};
+
+/**
+ * Amount validation utilities
+ */
+export interface AmountValidationOptions {
+  minAmount?: number;
+  maxAmount?: number;
+  customMinError?: string;
+  customMaxError?: string;
+}
+
+export const validateAmount = (
+  amount: string | number,
+  options: AmountValidationOptions = {}
+): { valid: boolean; error?: string } => {
+  const {
+    minAmount = 50,
+    maxAmount = Infinity,
+    customMinError,
+    customMaxError,
+  } = options;
+
+  const numAmount = typeof amount === "string" ? Number(amount) : amount;
+
+  if (typeof amount === "string" && (!amount || isNaN(numAmount))) {
+    return { valid: false, error: "Please enter a valid amount" };
+  }
+
+  if (numAmount <= 0) {
+    return { valid: false, error: "Amount must be greater than ₱0" };
+  }
+
+  if (numAmount < minAmount) {
+    return {
+      valid: false,
+      error:
+        customMinError || `Minimum amount is ₱${minAmount.toLocaleString()}`,
+    };
+  }
+
+  if (numAmount > maxAmount) {
+    return {
+      valid: false,
+      error:
+        customMaxError || `Maximum amount is ₱${maxAmount.toLocaleString()}`,
+    };
+  }
+
+  return { valid: true };
+};
+
+/**
+ * Phone number validation utilities
+ */
+export const validatePhoneNumber = (
+  phone: string,
+  required = false
+): { valid: boolean; error?: string } => {
+  if (!phone.trim()) {
+    if (required) {
+      return { valid: false, error: "Phone number is required" };
+    }
+    return { valid: true };
+  }
+
+  const cleanedPhone = phone.replace(/\s/g, "");
+  if (!PHILIPPINE_PHONE_REGEX.test(cleanedPhone)) {
+    return {
+      valid: false,
+      error: "Please enter a valid Philippine phone number (09XXXXXXXXX)",
+    };
+  }
+
+  return { valid: true };
+};
+
+/**
+ * Name validation utilities
+ */
+export const validateName = (
+  name: string
+): { valid: boolean; error?: string } => {
+  if (!name.trim()) {
+    return { valid: false, error: "Please enter your name" };
+  }
+
+  if (name.trim().length < 2) {
+    return { valid: false, error: "Name must be at least 2 characters" };
+  }
+
+  return { valid: true };
+};
