@@ -1,7 +1,14 @@
 "use client";
 
 import { createClientUseClient } from "@/lib/supabase/supabaseClient";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
 
 type User = {
   id: string;
@@ -33,31 +40,48 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const supabase = createClientUseClient();
 
-  // Fetch user from Supabase database
-  const fetchUser = async (id: string) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("id", id)
-        .single();
+  // Memoize supabase client to prevent re-creation
+  const supabase = useMemo(() => createClientUseClient(), []);
 
-      if (error) throw error;
-      setUser(data);
-    } catch (err: any) {
-      console.error("Failed to fetch user:", err);
-      setError(err.message || "Error fetching user data");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Fetch user from Supabase database - memoized with useCallback
+  const fetchUser = useCallback(
+    async (id: string) => {
+      try {
+        setLoading(true);
+        setError(null);
+
+
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("id", id)
+          .single();
+
+        if (error) throw error;
+
+        setUser(data);
+      } catch (err: any) {
+        console.error("❌ Failed to fetch user:", err);
+        setError(err.message || "Error fetching user data");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [supabase]
+  );
+
+  // Logout function - memoized with useCallback
+  const logOut = useCallback(async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setError(null);
+    window.location.href = "/"; // Redirect to home or login page
+  }, [supabase]);
 
   // Initialize user from auth session
   useEffect(() => {
+
     const initializeUser = async () => {
       try {
         const {
@@ -70,7 +94,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
           setLoading(false);
         }
       } catch (err: any) {
-        console.error("Error initializing user:", err);
+        console.error("❌ Error initializing user:", err);
         setError(err.message || "Error initializing user");
         setLoading(false);
       }
@@ -82,31 +106,40 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+
       if (event === "SIGNED_IN" && session?.user?.id) {
         await fetchUser(session.user.id);
       } else if (event === "SIGNED_OUT") {
         setUser(null);
+        setError(null);
         setLoading(false);
+      } else if (event === "TOKEN_REFRESHED" && session?.user?.id) {
+        // Optionally refetch user on token refresh
+        await fetchUser(session.user.id);
+      } else if (event === "USER_UPDATED" && session?.user?.id) {
+        await fetchUser(session.user.id);
       }
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [supabase, fetchUser]);
 
-  const logOut = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    window.location.href = "/"; // Redirect to home or login page
-  };
+  // Memoize context value to prevent unnecessary re-renders
+  const contextValue = useMemo(
+    () => ({
+      user,
+      loading,
+      error,
+      refreshUser: fetchUser,
+      logOut,
+    }),
+    [user, loading, error, fetchUser, logOut]
+  );
 
   return (
-    <UserContext.Provider
-      value={{ user, loading, error, refreshUser: fetchUser, logOut }}
-    >
-      {children}
-    </UserContext.Provider>
+    <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>
   );
 }
 

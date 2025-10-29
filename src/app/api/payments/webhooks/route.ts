@@ -1,24 +1,43 @@
 import { createClient } from "@/lib/supabase/supabaseServer";
-import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  const body = await req.json();
-  const event = body.data.attributes;
-  const supabase = await createClient();
+  try {
+    const body = await req.json();
+    console.log("Raw webhook:", JSON.stringify(body, null, 2));
 
-  console.log("webhook received:", body);
+    const event = body.data;
+    const eventType = event.attributes.type;
+    const paymentData = event.attributes.data?.attributes;
 
-  if (event.type === "payment.paid") {
-    const paymentData = event.data.attributes;
+    if (!paymentData) {
+      console.error("Missing payment data");
+      return new Response("Missing payment data", { status: 400 });
+    }
 
-    // Example: update funds table
-    await supabase.from("funds").insert({
-      amount: paymentData.amount,
-      status: "paid",
-      reference_id: paymentData.id,
-      user_email: paymentData.billing.email,
-    });
+    const metadata = paymentData.metadata;
+    const amount = paymentData.amount / 100;
+    const status = paymentData.status;
+
+    console.log("Webhook received:", { eventType, metadata, amount, status });
+
+    // Example update in Supabase
+    if (metadata?.transaction_id) {
+      const supabase = await createClient();
+
+      await supabase
+        .from("funds")
+        .update({
+          status: "paid",
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", metadata.transaction_id);
+
+      console.log(`✅ Updated transaction ${metadata.transaction_id}`);
+    }
+
+    return new Response("OK", { status: 200 });
+  } catch (error) {
+    console.error("Error handling webhook:", error);
+    return new Response("Error", { status: 500 });
   }
-
-  return NextResponse.json({ received: true });
 }
