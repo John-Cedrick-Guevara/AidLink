@@ -18,7 +18,7 @@ import { userInitialData } from "./server/getUserDashboard";
 import { FundSummary, Project } from "@/types";
 import ProjectCard from "@/components/shared/ProjectCard";
 import { useUser } from "@/components/providers/UserProvider";
-import { useReceiptActions } from "./hooks/receiptHooks";
+import { useReceiptActions } from "./hooks/useReceiptHooks";
 
 export interface UserDashboardProps {
   initialData: userInitialData;

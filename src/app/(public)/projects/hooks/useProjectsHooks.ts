@@ -88,19 +88,16 @@ export function useProject(
       .on(
         "postgres_changes",
         {
-          event: "INSERT",
+          event: "*",
           schema: "public",
           table: "funds",
           filter: `project=eq.${projectId}`,
         },
         async (payload: any) => {
           console.log("Project updated:", payload.eventType);
-          const updatedData = payload.new as Partial<Project>;
 
           // Optimistic update
-          mutate(
- 
-          );
+          mutate();
         }
       )
       .subscribe();
