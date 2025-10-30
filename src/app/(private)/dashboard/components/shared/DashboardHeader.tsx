@@ -7,10 +7,11 @@ import { motion } from "framer-motion";
 
 interface DashboardHeaderProps {
   userName: string;
-  status?: "restricted" | "normal";
+  status?: string| undefined;
 }
 
 const DashboardHeader = ({ userName, status }: DashboardHeaderProps) => {
+  console.log(status);
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

@@ -21,7 +21,7 @@ export const useProposalForm = () => {
     target_start_date: "",
     tags: "",
     bank_accounts: [],
-    supporting_docs: [],
+    supporting_docs: new File([], ""),
   });
   const [isPending, startTransition] = useTransition();
 
@@ -43,7 +43,7 @@ export const useProposalForm = () => {
     if (e.target.files) {
       setFormData((prev) => ({
         ...prev,
-        supporting_docs: Array.from(e.target.files || []),
+        supporting_docs: e.target.files ? e.target.files[0] : new File([], ""),
       }));
     }
   };
@@ -129,6 +129,11 @@ export const useProposalForm = () => {
           toast.error("Please add at least one tag");
           return false;
         }
+
+        if (!formData.supporting_docs.name) {
+          toast.error("Please upload supporting documents");
+          return false;
+        }
         return true;
 
       default:
@@ -154,7 +159,8 @@ export const useProposalForm = () => {
     startTransition(async () => {
       try {
         const result = await handleCreateProject(formData);
-
+        // const result = {success : false, message: "Function disabled for demo"};
+        console.log(formData);
         if (result.success) {
           toast.success(result.message, {
             description: "Your project is now pending admin approval.",

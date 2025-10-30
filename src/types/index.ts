@@ -9,6 +9,7 @@ export interface Project {
   image?: string;
   team_size: string;
   tags: string;
+  documents_url: string;
 
   funds: Fund[];
   proposer: User;

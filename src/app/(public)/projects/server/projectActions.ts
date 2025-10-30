@@ -1,23 +1,26 @@
-import { createClientUseClient } from "@/lib/supabase/supabaseClient";
 import { createClient } from "@/lib/supabase/supabaseServer";
-import { FundSummary } from "@/types";
+
 
 export async function getAllProjects() {
-  const supabase = await createClient();
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("projects")
+      .select(
+        "*, sector (*), bank_details(*), funds (*), comments(*), proposer:users (*), ratings(*)"
+      )
+      .eq("status", "approved");
 
-  const { data, error } = await supabase
-    .from("projects")
-    .select(
-      "*, sector (*), bank_details(*), funds (*), comments(*), proposer:users (*), ratings(*)"
-    );
-  // .eq("status", "approved");
+    if (error) {
+      console.error("Error fetching projects:", error);
+      return [];
+    }
 
-  if (error) {
+    return data || [];
+  } catch (error) {
     console.error("Error fetching projects:", error);
     return [];
   }
-
-  return data || [];
 }
 
 export async function getProjectById(projectId: string) {
@@ -38,9 +41,7 @@ export async function getProjectById(projectId: string) {
   return data || null;
 }
 
-export async function getProjectReceipts(
-  userId: string
-) {
+export async function getProjectReceipts(userId: string) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -70,5 +71,5 @@ export async function getProjectReceipts(
     return null;
   }
 
-  return data
+  return data;
 }

@@ -60,7 +60,7 @@ const UserDashboard = ({
       <div className="pt-26 pb-16">
         <div className="container mx-auto px-4 lg:px-8">
           {/* Header */}
-          <DashboardHeader userName={user?.full_name || "User"} />
+          <DashboardHeader userName={user?.full_name || "User"} status={user?.status} />
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">

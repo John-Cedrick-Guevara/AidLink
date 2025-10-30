@@ -47,6 +47,23 @@ export async function handleCreateProject(formData: ProposalFormData) {
 
     const userId = user.id;
 
+    // Upload supporting documents if any
+    const filePath = `${userId}-${formData.title}/${Date.now()}_${
+      formData.supporting_docs.name
+    }`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("project_documents")
+      .upload(filePath, formData.supporting_docs, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+
+    if (uploadError) {
+      console.error("Error uploading file:", uploadError);
+      throw uploadError;
+    }
+
     // Insert project proposal
     const { data: project, error: projectError } = await supabase
       .from("projects")
@@ -61,6 +78,7 @@ export async function handleCreateProject(formData: ProposalFormData) {
         target_funds: parseFloat(formData.target_funds) || 0,
         target_start_date: formData.target_start_date,
         tags: formData.tags,
+        documents_url: filePath,
       })
       .select()
       .single();
@@ -97,42 +115,7 @@ export async function handleCreateProject(formData: ProposalFormData) {
       };
     }
 
-    // Upload supporting documents if any
-    if (formData.supporting_docs.length > 0) {
-      const uploadPromises = formData.supporting_docs.map(
-        async (file: File) => {
-          const fileExt = file.name.split(".").pop();
-          const fileName = `${Date.now()}_${Math.random()
-            .toString(36)
-            .substring(7)}.${fileExt}`;
-          const filePath = `${project.id}/${fileName}`;
-
-          const { error: uploadError } = await supabase.storage
-            .from("project_documents")
-            .upload(filePath, file, {
-              cacheControl: "3600",
-              upsert: false,
-            });
-
-          if (uploadError) {
-            console.error("Error uploading file:", uploadError);
-            throw uploadError;
-          }
-
-          return filePath;
-        }
-      );
-
-      try {
-        await Promise.all(uploadPromises);
-      } catch (uploadError) {
-        console.error("Error uploading documents:", uploadError);
-        return {
-          success: false,
-          message: "Project created but failed to upload some documents.",
-        };
-      }
-    }
+    console.log(formData.supporting_docs);
 
     // Revalidate relevant paths
     revalidatePath("/dashboard");

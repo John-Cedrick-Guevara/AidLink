@@ -1,3 +1,4 @@
+import { getAllProjects } from "@/app/(public)/projects/server/projectActions";
 import { createClient } from "@/lib/supabase/supabaseServer";
 import { NextResponse } from "next/server";
 
@@ -5,22 +6,12 @@ export async function GET() {
   try {
     const supabase = await createClient();
 
-    const { data, error } = await supabase
-      .from("projects")
-      .select(
-        "*, sector (*), ratings(*), bank_details(*), funds (*, user(full_name)), comments(*, user_id(full_name, id)), proposer:users (*), ratings(*)"
-      )
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Error fetching projects:", error);
-      return NextResponse.json(
-        { error: "Failed to fetch projects" },
-        { status: 500 }
-      );
+    const result = await getAllProjects();
+    if (!result) {
+      return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ data });
+    return NextResponse.json({ data: result });
   } catch (error) {
     console.error("Unexpected error:", error);
     return NextResponse.json(

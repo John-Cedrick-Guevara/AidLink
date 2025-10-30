@@ -7,6 +7,7 @@ import type { Project } from "@/types";
 
 import RatingComponent from "../RatingComponent";
 import { DonationDialog } from "@/components/shared/donation-dialog/DonationDialog";
+import Link from "next/link";
 
 interface ProjectSidebarProps {
   project: Project;
@@ -24,6 +25,10 @@ export function ProjectSidebar({ project }: ProjectSidebarProps) {
       return 0;
     }
   };
+
+  const filePath = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/project_documents/${project.documents_url}`;
+
+  console.log(filePath);
 
   return (
     <div className="space-y-6">
@@ -100,9 +105,14 @@ export function ProjectSidebar({ project }: ProjectSidebarProps) {
           </div>
           <div>
             <p className="text-sm text-muted-foreground">Role</p>
-            <p className="text-sm capitalize">
-              {project.proposer?.role || "N/A"}
-            </p>
+            <Link
+              href={filePath}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 underline mt-2 block"
+            >
+              Supporting Documents
+            </Link>
           </div>
         </div>
       </Card>
