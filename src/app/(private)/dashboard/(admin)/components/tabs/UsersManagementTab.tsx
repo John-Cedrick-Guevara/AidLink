@@ -5,9 +5,9 @@ import { TableRow, TableCell } from "@/components/ui/table";
 import TableUI from "@/components/shared/TableUI";
 import { BellRing, Eye, UserX } from "lucide-react";
 import { User } from "@/types";
-import { Badge } from "@/components/ui/badge";
 import RestrictUserDialog from "../dialogs/user/RestrictUserDialog";
 import { useState } from "react";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 interface UsersManagementTabProps {
   users: User[];
@@ -51,7 +51,9 @@ const UsersManagementTab = ({ users }: UsersManagementTabProps) => {
         {user.fundsDonated}
       </TableCell>
 
-      <TableCell className="hidden lg:table-cell">{user.status}</TableCell>
+      <TableCell className="hidden lg:table-cell">
+        <StatusBadge type="user" status={user.status} />
+      </TableCell>
 
       <TableCell className="hidden lg:table-cell text-right">
         <div className="flex items-center justify-end gap-2">
@@ -88,14 +90,7 @@ const UsersManagementTab = ({ users }: UsersManagementTabProps) => {
               <div className="flex items-center gap-2 mb-1 justify-between">
                 <h1 className="font-semibold text-base">{user.full_name}</h1>
                 {/* stats */}
-                <Badge
-                  variant={
-                    user.status === "restricted" ? "destructive" : "primary"
-                  }
-                  className=""
-                >
-                  {user.status}
-                </Badge>
+                <StatusBadge type="user" status={user.status} />
               </div>
               <div className="text-sm text-muted-foreground">{user.email}</div>
             </div>

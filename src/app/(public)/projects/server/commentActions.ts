@@ -53,7 +53,7 @@ export async function editCommentInProject(commentId: string, content: string) {
   try {
     // Validate input
     const validated = EditCommentSchema.parse({ commentId, content });
-
+console.log("==================",commentId, content);
     // Require authentication
     const user = await requireAuth();
 

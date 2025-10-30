@@ -6,6 +6,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { SWRProvider } from "@/components/providers/SWRProvider";
 import { UserProvider } from "@/components/providers/UserProvider";
+import { getCurrentUser } from "@/lib/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,19 +24,23 @@ export const metadata: Metadata = {
     "A modern platform where students and teachers propose, browse, and support meaningful charity projects with complete transparency and engagement.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await getCurrentUser();
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased scroll-smooth`}
       >
         <SWRProvider>
-          <UserProvider>
+          <UserProvider userId={user?.id}>
+            <Navbar />
             <main className="min-h-screen">{children}</main>
+            <Footer />
             <Toaster richColors position="top-center" />
           </UserProvider>
         </SWRProvider>

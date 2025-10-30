@@ -30,12 +30,12 @@ export const useCommentHooks = () => {
   };
 
   const editComment = async (
-    projectId: string,
     commentId: string,
     content: string
   ) => {
     startTransition(async () => {
       try {
+        console.log(commentId, content);
         const result = await editCommentInProject(commentId, content);
 
         if (result.success) {

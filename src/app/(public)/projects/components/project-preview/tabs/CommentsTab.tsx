@@ -35,7 +35,7 @@ export function CommentsTab({ project }: CommentsTabProps) {
 
   const { addComment, editComment, removeComment } = useCommentHooks();
 
-  useEffect(()  => {
+  useEffect(() => {
     // Get current user ID
     (async () => {
       const userId = await getCurrentUserId();
@@ -70,7 +70,9 @@ export function CommentsTab({ project }: CommentsTabProps) {
       return;
     }
 
-    await editComment(project.id, commentId, editedContent);
+    console.log("Saving comment:", commentId, "with content:", editedContent);
+
+    await editComment(commentId, editedContent);
     setEditingCommentId(null);
     setEditedContent("");
   };

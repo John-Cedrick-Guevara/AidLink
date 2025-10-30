@@ -36,7 +36,13 @@ const UserContext = createContext<UserContextType>({
   logOut: async () => {},
 });
 
-export function UserProvider({ children }: { children: React.ReactNode }) {
+export function UserProvider({
+  children,
+  userId,
+}: {
+  children: React.ReactNode;
+  userId?: string;
+}) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,31 +51,33 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const supabase = useMemo(() => createClientUseClient(), []);
 
   // Fetch user from Supabase database - memoized with useCallback
-  const fetchUser = useCallback(
-    async (id: string) => {
-      try {
-        setLoading(true);
-        setError(null);
+  const fetchUser = async (id: string | undefined) => {
 
+    if (!id) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+    try {
+      setLoading(true);
+      setError(null);
 
-        const { data, error } = await supabase
-          .from("users")
-          .select("*")
-          .eq("id", id)
-          .single();
+      const { data, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", id)
+        .single();
 
-        if (error) throw error;
+      if (error) throw error;
 
-        setUser(data);
-      } catch (err: any) {
-        console.error("❌ Failed to fetch user:", err);
-        setError(err.message || "Error fetching user data");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [supabase]
-  );
+      setUser(data);
+    } catch (err: any) {
+      console.error("❌ Failed to fetch user:", err);
+      setError(err.message || "Error fetching user data");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Logout function - memoized with useCallback
   const logOut = useCallback(async () => {
@@ -81,50 +89,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
   // Initialize user from auth session
   useEffect(() => {
-
-    const initializeUser = async () => {
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-
-        if (session?.user?.id) {
-          await fetchUser(session.user.id);
-        } else {
-          setLoading(false);
-        }
-      } catch (err: any) {
-        console.error("❌ Error initializing user:", err);
-        setError(err.message || "Error initializing user");
-        setLoading(false);
-      }
-    };
-
-    initializeUser();
+    fetchUser(userId);
 
     // Listen for auth state changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-
-      if (event === "SIGNED_IN" && session?.user?.id) {
-        await fetchUser(session.user.id);
-      } else if (event === "SIGNED_OUT") {
-        setUser(null);
-        setError(null);
-        setLoading(false);
-      } else if (event === "TOKEN_REFRESHED" && session?.user?.id) {
-        // Optionally refetch user on token refresh
-        await fetchUser(session.user.id);
-      } else if (event === "USER_UPDATED" && session?.user?.id) {
-        await fetchUser(session.user.id);
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [supabase, fetchUser]);
+  }, [userId]);
 
   // Memoize context value to prevent unnecessary re-renders
   const contextValue = useMemo(
