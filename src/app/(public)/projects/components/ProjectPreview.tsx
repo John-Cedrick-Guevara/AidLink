@@ -35,6 +35,8 @@ export default function ProjectPreview({
     initialProject
   );
 
+  console.log(project);
+
   // Error state
   if (error) {
     return (

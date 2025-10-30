@@ -54,11 +54,11 @@ const Step4Documents = ({
             htmlFor="supporting_docs"
             className="flex flex-col items-center gap-2 cursor-pointer"
           >
-            {formData.supporting_docs.length > 0 ? (
+            {formData.supporting_docs.size > 0 ? (
               <>
                 <CheckCircle2 className="w-10 h-10 text-success" />
                 <p className="text-sm font-medium">
-                  {formData.supporting_docs.length} file(s) selected
+                  {formData.supporting_docs.name} file selected
                 </p>
                 <p className="text-xs text-muted-foreground">Click to change</p>
               </>
@@ -67,19 +67,19 @@ const Step4Documents = ({
                 <Upload className="w-10 h-10 text-muted-foreground" />
                 <p className="text-sm font-medium">Click to upload documents</p>
                 <p className="text-xs text-muted-foreground">
-                  PDF, DOC, or images (max 10MB each)
+                  PDF, DOC, or images (max 300kb)
                 </p>
               </>
             )}
           </label>
         </div>
-        {formData.supporting_docs.length > 0 && (
+        {formData.supporting_docs && (
           <div className="space-y-1 mt-2">
-            {formData.supporting_docs.map((file, index) => (
-              <p key={index} className="text-xs text-muted-foreground">
-                • {file.name}
+            {formData.supporting_docs && (
+              <p className="text-xs text-muted-foreground">
+                • {formData.supporting_docs.name}
               </p>
-            ))}
+            )}
           </div>
         )}
       </div>

@@ -25,7 +25,7 @@ export interface ProposalFormData {
   target_start_date: string;
   tags: string;
   bank_accounts: BankAccount[];
-  supporting_docs: File[];
+  supporting_docs: File;
 }
 
 export interface StepConfig {
