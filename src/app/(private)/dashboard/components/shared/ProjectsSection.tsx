@@ -6,6 +6,7 @@ import ProjectCard from "@/components/shared/ProjectCard";
 
 import { motion } from "framer-motion";
 import { Project } from "@/types";
+import EmptyState from "./EmptyState";
 
 interface ProjectsSectionProps {
   title: string;
@@ -30,7 +31,7 @@ const ProjectsSection = ({
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold">{title}</h2>
         {showViewAll && (
-          <Link href="/projects/new">
+          <Link href="/projects">
             <Button variant="outline">View All</Button>
           </Link>
         )}
@@ -44,7 +45,7 @@ const ProjectsSection = ({
         </div>
       ) : (
         <div className="text-center py-12 text-muted-foreground">
-          <p>No projects to display</p>
+          <EmptyState />
         </div>
       )}
     </motion.div>

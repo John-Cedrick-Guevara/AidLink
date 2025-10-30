@@ -101,6 +101,14 @@ export interface User {
   updated_at: string;
 }
 
+export interface SectorList {
+  id: string;
+  title: string;
+  description: string;
+  projectCount: number;
+  totalRaised: number;
+}
+
 export interface Sector {
   id: string;
   title: string;

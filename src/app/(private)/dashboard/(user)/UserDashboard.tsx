@@ -19,6 +19,7 @@ import { FundSummary, Project } from "@/types";
 import ProjectCard from "@/components/shared/ProjectCard";
 import { useUser } from "@/components/providers/UserProvider";
 import { useReceiptActions } from "./hooks/useReceiptHooks";
+import ProjectsSection from "../components/shared/ProjectsSection";
 
 export interface UserDashboardProps {
   initialData: userInitialData;
@@ -46,9 +47,6 @@ const UserDashboard = ({
 
   // Data
   const userProjects = projects.filter((p) => p.proposer.id === user?.id);
-  const userReceipts = fundingReceipts.filter((receipt) =>
-    userProjects.some((p) => p.id === receipt.project_id)
-  );
 
   const handleViewReceipt = (receipt: FundSummary) => {
     setSelectedReceipt(receipt);
@@ -60,7 +58,10 @@ const UserDashboard = ({
       <div className="pt-26 pb-16">
         <div className="container mx-auto px-4 lg:px-8">
           {/* Header */}
-          <DashboardHeader userName={user?.full_name || "User"} status={user?.status} />
+          <DashboardHeader
+            userName={user?.full_name || "User"}
+            status={user?.status}
+          />
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
@@ -104,12 +105,12 @@ const UserDashboard = ({
           </div>
 
           {/* My Projects Section */}
-          {/* <ProjectsSection
+          <ProjectsSection
             title="My Projects"
             projects={userProjects.slice(0, 3)}
             showViewAll={true}
             delay={0.1}
-          /> */}
+          />
 
           {/* Funding Receipts Section */}
           <motion.div
@@ -125,37 +126,6 @@ const UserDashboard = ({
               receipts={receipts}
               onViewReceipt={handleViewReceipt}
             />
-          </motion.div>
-
-          {/* Browse All Projects */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <h2 className="text-2xl font-bold mb-6">Browse All Projects</h2>
-
-            {/* <ProjectFilters
-              searchQuery={searchQuery}
-              selectedSector={selectedSector}
-              selectedStatus={selectedStatus}
-              sectors={sectors}
-              filteredCount={filteredProjects.length}
-              onSearchChange={setSearchQuery}
-              onSectorChange={setSelectedSector}
-              onStatusChange={setSelectedStatus}
-              onClearFilters={clearFilters}
-            /> */}
-
-            {projects.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {projects.map((project) => (
-                  <ProjectCard key={project.id} project={project} />
-                ))}
-              </div>
-            ) : (
-              <EmptyState />
-            )}
           </motion.div>
         </div>
       </div>

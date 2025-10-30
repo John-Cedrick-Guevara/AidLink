@@ -3,7 +3,7 @@
 import { createClient } from "@/lib/supabase/supabaseServer";
 import * as brevo from "@getbrevo/brevo";
 
-export async function getAllNotifications(userId: string) {
+export async function getAllNotifications(userId: string | undefined) {
   const supabase = await createClient();
 
   const { data, error } = await supabase

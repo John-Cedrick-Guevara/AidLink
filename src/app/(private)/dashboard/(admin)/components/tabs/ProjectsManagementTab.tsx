@@ -17,6 +17,7 @@ import { Project } from "@/types";
 import { useState } from "react";
 import { useProjectActions } from "../../hooks/adminProjectHooks";
 import AlertProjectDialog from "../dialogs/projects/AlertDialog";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 interface ProjectsManagementTabProps {
   projects: Project[];
@@ -84,19 +85,7 @@ const ProjectsManagementTab = ({ projects }: ProjectsManagementTabProps) => {
       </TableCell>
 
       <TableCell className="hidden lg:table-cell">
-        <Badge
-          className={
-            project.status === "pending"
-              ? "bg-warning/10 text-warning"
-              : project.status === "approved"
-              ? "bg-success/10 text-success"
-              : project.status === "rejected"
-              ? "bg-destructive/10 text-destructive"
-              : "bg-primary/10 text-primary"
-          }
-        >
-          {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
-        </Badge>
+        <StatusBadge type="project" status={project.status} />
       </TableCell>
 
       <TableCell className="hidden lg:table-cell text-right">
@@ -148,19 +137,7 @@ const ProjectsManagementTab = ({ projects }: ProjectsManagementTabProps) => {
             <div className="font-semibold text-base whitespace-normal">
               {project.title}
             </div>
-            <Badge
-              className={
-                project.status === "pending"
-                  ? "bg-warning/10 text-warning"
-                  : project.status === "approved"
-                  ? "bg-success/10 text-success"
-                  : project.status === "rejected"
-                  ? "bg-destructive/10 text-destructive"
-                  : "bg-primary/10 text-primary"
-              }
-            >
-              {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
-            </Badge>
+            <StatusBadge type="project" status={project.status} />
           </div>
 
           {/* Description */}

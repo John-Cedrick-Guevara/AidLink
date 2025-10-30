@@ -8,6 +8,8 @@ import type { Project } from "@/types";
 import RatingComponent from "../RatingComponent";
 import { DonationDialog } from "@/components/shared/donation-dialog/DonationDialog";
 import Link from "next/link";
+import { useUser } from "@/components/providers/UserProvider";
+import LockCard from "@/components/shared/LockCard";
 
 interface ProjectSidebarProps {
   project: Project;
@@ -26,30 +28,34 @@ export function ProjectSidebar({ project }: ProjectSidebarProps) {
     }
   };
 
-  const filePath = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/project_documents/${project.documents_url}`;
+  const { user } = useUser();
 
-  console.log(filePath);
+  const filePath = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/project_documents/${project.documents_url}`;
 
   return (
     <div className="space-y-6">
       {/* Support Card */}
-      <Card className="glass-card p-6">
-        <h3 className="text-xl font-semibold mb-4">Support This Project</h3>
-        <DonationDialog
-          projectId={project.id}
-          projectTitle={project.title}
-          bankAccounts={project.bank_details}
-          sectorId={project.sector.id}
-        >
-          <Button
-            className="w-full bg-gradient-primary hover:opacity-90"
-            size="lg"
+      {user ? (
+        <Card className="glass-card p-6">
+          <h3 className="text-xl font-semibold mb-4">Support This Project</h3>
+          <DonationDialog
+            projectId={project.id}
+            projectTitle={project.title}
+            bankAccounts={project.bank_details}
+            sectorId={project.sector.id}
           >
-            <Heart className="w-5 h-5 mr-2" />
-            Donate Now
-          </Button>
-        </DonationDialog>
-      </Card>
+            <Button
+              className="w-full bg-gradient-primary hover:opacity-90"
+              size="lg"
+            >
+              <Heart className="w-5 h-5 mr-2" />
+              Donate Now
+            </Button>
+          </DonationDialog>
+        </Card>
+      ) : (
+        <LockCard title={"Log In to Donate"} message={"For secure access to donation options, please log in."} />
+      )}
 
       {/* Project Stats */}
       <Card className="glass-card p-6">

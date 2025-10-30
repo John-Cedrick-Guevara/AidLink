@@ -18,7 +18,7 @@ const signUpPage = () => {
   }, [state]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-linear-to-br from-background via-primary/5 to-accent/5">
+    <div className="min-h-screen pt-20 flex items-center justify-center p-4 bg-linear-to-br from-background via-primary/5 to-accent/5">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

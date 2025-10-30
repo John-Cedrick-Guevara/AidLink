@@ -10,7 +10,6 @@ import { motion } from "framer-motion";
 import { PlusCircle, AlertCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Navbar from "@/components/layout/Navbar";
 
 const ProjectsPage = ({ initialProjects }: { initialProjects: Project[] }) => {
   // Use SWR with initial data from server
@@ -58,7 +57,6 @@ const ProjectsPage = ({ initialProjects }: { initialProjects: Project[] }) => {
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-6">
-      <Navbar />
       <Button
         variant="ghost"
         className="mb-4"

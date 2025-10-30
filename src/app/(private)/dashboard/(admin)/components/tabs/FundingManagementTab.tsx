@@ -6,6 +6,7 @@ import { TableRow, TableCell } from "@/components/ui/table";
 import TableUI from "@/components/shared/TableUI";
 import { Eye, CheckCircle2, XCircle } from "lucide-react";
 import type { FundingReceipt } from "@/data/dummyData";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 interface FundingManagementTabProps {
   receipts: FundingReceipt[];
@@ -48,17 +49,7 @@ const FundingManagementTab = ({
       </TableCell>
 
       <TableCell className="hidden lg:table-cell">
-        <Badge
-          className={
-            receipt.status === "pending"
-              ? "bg-warning/10 text-warning"
-              : receipt.status === "approved"
-              ? "bg-success/10 text-success"
-              : "bg-destructive/10 text-destructive"
-          }
-        >
-          {receipt.status.charAt(0).toUpperCase() + receipt.status.slice(1)}
-        </Badge>
+        <StatusBadge type="receipt" status={receipt.status} />
       </TableCell>
 
       <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">
@@ -105,17 +96,7 @@ const FundingManagementTab = ({
             <div className="font-semibold text-base whitespace-normal flex-1 pr-2">
               {receipt.project_title}
             </div>
-            <Badge
-              className={
-                receipt.status === "pending"
-                  ? "bg-warning/10 text-warning"
-                  : receipt.status === "approved"
-                  ? "bg-success/10 text-success"
-                  : "bg-destructive/10 text-destructive"
-              }
-            >
-              {receipt.status.charAt(0).toUpperCase() + receipt.status.slice(1)}
-            </Badge>
+            <StatusBadge type="receipt" status={receipt.status} />
           </div>
 
           {/* Details */}

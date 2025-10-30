@@ -35,6 +35,15 @@ const CTASection = () => {
                 Browse Projects
               </Button>
             </Link>
+            <Link href="/sectors">
+              <Button
+                size="lg"
+                variant="outline"
+                className="px-8 text-base bg-white/10 text-white border-white hover:bg-white hover:text-primary shadow-lg"
+              >
+                Browse Sectors
+              </Button>
+            </Link>
           </div>
         </motion.div>
       </div>
