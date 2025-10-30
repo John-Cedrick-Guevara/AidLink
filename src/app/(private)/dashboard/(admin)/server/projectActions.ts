@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/supabaseServer";
 import { revalidatePath } from "next/cache";
+import { createNotification } from "../../(user)/server/notificationActions";
 
 export async function getAllProjectsForAdmin() {
   try {
@@ -26,6 +27,20 @@ export async function getAllProjectsForAdmin() {
 export async function updateProjectStatus(projectId: string, approve: boolean) {
   try {
     const supabase = await createClient();
+
+    // First, get the project details to notify the proposer
+    const { data: project, error: fetchError } = await supabase
+      .from("projects")
+      .select("title, proposer")
+      .eq("id", projectId)
+      .single();
+
+    if (fetchError) {
+      console.error("Error fetching project details:", fetchError);
+      return { success: false, message: fetchError.message };
+    }
+
+    // Update project status
     const { error } = await supabase
       .from("projects")
       .update({
@@ -37,6 +52,18 @@ export async function updateProjectStatus(projectId: string, approve: boolean) {
     if (error) {
       console.error("Error updating project status:", error);
       return { success: false, message: error.message };
+    }
+
+    // Send notification to project proposer
+    if (project?.proposer) {
+      await createNotification(
+        project.proposer,
+        approve ? "approval" : "rejection",
+        approve ? "🎉 Project Approved!" : "📋 Project Status Update",
+        approve
+          ? `Great news! Your project "${project.title}" has been approved and is now live on the platform.`
+          : `Your project "${project.title}" was not approved. Please review the guidelines and consider resubmitting with improvements.`
+      );
     }
 
     // Revalidate admin dashboard to reflect changes

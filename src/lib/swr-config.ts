@@ -60,4 +60,8 @@ export const CACHE_KEYS = {
   // Projects
   PROJECTS: "/api/projects",
   PROJECT: (id: string) => `/api/projects/${id}`,
+
+
+  // Notifications
+  NOTIFICATION: (id: string) => `/api/notifications/${id}`,
 } as const;

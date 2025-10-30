@@ -29,6 +29,16 @@ export interface BankAccount {
   account_name: string;
 }
 
+export interface Notifications {
+  id: string;
+  type: "donation" | "approval" | "rejection" | "comment" | "update";
+  title: string;
+  message: string;
+  created_at: string;
+  read: boolean;
+}
+
+
 export interface Fund {
   id: string;
   amount: number;

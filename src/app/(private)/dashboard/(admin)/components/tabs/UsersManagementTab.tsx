@@ -60,10 +60,21 @@ const UsersManagementTab = ({ users }: UsersManagementTabProps) => {
           </Button>
           <Button
             size="sm"
-            variant="destructive"
+            variant={user.status === "restricted" ? "primary" : "destructive"}
+            className="max-w-3xs flex items-center w-full"
             onClick={() => openRestrictDialog(user)}
           >
-            Restrict
+            {user.status === "restricted" ? (
+              <>
+                <Eye className="w-4 h-4 mr-1" />
+                Unrestrict
+              </>
+            ) : (
+              <>
+                <UserX className="w-4 h-4 mr-1" />
+                Restrict
+              </>
+            )}
           </Button>
         </div>
       </TableCell>

@@ -9,6 +9,8 @@ export interface BankAccount {
   account_name: string;
 }
 
+
+
 export type PaymentMethod = "direct" | "manual";
 
 export interface DonationFormData {

@@ -4,7 +4,7 @@ import ProjectCard from "@/components/shared/ProjectCard";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
-import { useProjects } from "@/app/(public)/projects/hooks/useProjects";
+import { useProjects } from "@/app/(public)/projects/hooks/useProjectsHooks";
 import { Project } from "@/types";
 import { motion } from "framer-motion";
 import { PlusCircle, AlertCircle, ArrowLeft } from "lucide-react";
@@ -58,8 +58,7 @@ const ProjectsPage = ({ initialProjects }: { initialProjects: Project[] }) => {
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-6">
-
-      <Navbar/>
+      <Navbar />
       <Button
         variant="ghost"
         className="mb-4"

@@ -16,7 +16,7 @@ import type { Project } from "@/types";
 import { ProjectHeader } from "./project-preview/ProjectHeader";
 import { ProjectTabs } from "./project-preview/ProjectTabs";
 import { ProjectSidebar } from "./project-preview/ProjectSidebar";
-import { useProject } from "@/app/(public)/projects/hooks/useProjects";
+import { useProject } from "@/app/(public)/projects/hooks/useProjectsHooks";
 
 interface ProjectPreviewProps {
   initialProject: Project | null;

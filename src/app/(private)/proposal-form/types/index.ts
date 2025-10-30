@@ -3,7 +3,7 @@ export interface BankAccount {
   account_name: string;
   account_number: string;
   bank_name: string;
-} 
+}
 // Insert bank account details
 
 export interface BankAccountInsert {

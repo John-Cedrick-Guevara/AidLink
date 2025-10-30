@@ -2,6 +2,7 @@
 
 import { getCurrentUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/supabaseServer";
+import { createNotification } from "@/app/(private)/dashboard/(user)/server/notificationActions";
 
 export async function uploadReceipt(
   formData: FormData
@@ -56,6 +57,25 @@ export async function uploadReceipt(
         success: false,
         message: fundError.message || "Fund upload failed",
       };
+    }
+
+    // Fetch project details to notify the project owner
+    const { data: project, error: projectError } = await supabase
+      .from("projects")
+      .select("title, proposer")
+      .eq("id", projectId)
+      .single();
+
+    if (!projectError && project?.proposer) {
+      // Notify project owner about new donation
+      await createNotification(
+        project.proposer,
+        "donation",
+        "💰 New Donation Received!",
+        `You received a donation of ₱${amount.toLocaleString()} for your project "${
+          project.title
+        }". The donation is pending confirmation.`
+      );
     }
 
     return { success: true, message: "Upload successful", key: path };
