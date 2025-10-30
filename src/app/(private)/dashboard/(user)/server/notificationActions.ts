@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/supabaseServer";
+import * as brevo from "@getbrevo/brevo";
 
 export async function getAllNotifications(userId: string) {
   const supabase = await createClient();
@@ -80,6 +81,7 @@ export async function createNotification(
   const supabase = await createClient();
 
   try {
+    // Insert notification
     const { error } = await supabase.from("notifications").insert([
       {
         user_id: userId,
@@ -95,7 +97,44 @@ export async function createNotification(
       return { success: false, message: error.message };
     }
 
-    return { success: true, message: "Notification created successfully." };
+    // Fetch user email from users table
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("email, full_name")
+      .eq("id", userId)
+      .single();
+
+    if (userError || !userData?.email) {
+      console.error("Could not find user email:", userError);
+      return { success: true, message: "Notification saved (no email sent)" };
+    }
+
+    const client = new brevo.TransactionalEmailsApi();
+    client.setApiKey(
+      brevo.TransactionalEmailsApiApiKeys.apiKey,
+      process.env.BREVO_API_KEY!
+    );
+
+    const email = {
+      sender: {
+        name: "Charity Platform",
+        email: "jguevara24b-0002@olopsc.edu.ph",
+      },
+      to: [{ email: userData.email }],
+      subject: title,
+      htmlContent: `
+        <div style="font-family: Arial, sans-serif;">
+          <h3>${title}</h3>
+          <p>${message}</p>
+        </div>
+      `,
+    };
+
+    await client.sendTransacEmail(email);
+    return {
+      success: true,
+      message: "Notification and email sent successfully.",
+    };
   } catch (error) {
     console.error("Unexpected error creating notification:", error);
     return { success: false, message: "Failed to create notification" };
