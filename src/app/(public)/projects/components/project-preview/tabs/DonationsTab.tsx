@@ -68,7 +68,7 @@ export function DonationsTab({ project }: DonationsTabProps) {
     <div className="space-y-6">
       {/* Total Raised Summary */}
       {completedFunds.length > 0 && (
-        <Card className="glass-card p-6 bg-gradient-to-br from-primary/5 to-accent/5">
+        <Card className="glass-card p-6 bg-linear-to-br from-primary/5 to-accent/5">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground mb-1">Total Raised</p>
@@ -144,3 +144,5 @@ export function DonationsTab({ project }: DonationsTabProps) {
     </div>
   );
 }
+
+export default DonationsTab;

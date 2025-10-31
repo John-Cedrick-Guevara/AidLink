@@ -9,8 +9,9 @@ import {
   markNotificationAsRead,
 } from "../server/notificationActions";
 import { toast } from "sonner";
+import { fa } from "zod/v4/locales";
 
-export function useNotifications(userId: string) {
+export function useNotifications(userId: string, initialNotifications: Notifications[]) {
   const supabase = createClientUseClient();
 
   const {
@@ -20,6 +21,7 @@ export function useNotifications(userId: string) {
     isValidating,
     mutate,
   } = useSWR<Notifications[]>(userId ? CACHE_KEYS.NOTIFICATION(userId) : null, {
+    fallbackData: initialNotifications,
     revalidateOnFocus: false,
     revalidateOnReconnect: true,
   });

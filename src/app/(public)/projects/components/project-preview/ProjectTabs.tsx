@@ -1,28 +1,40 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Star,
   TrendingUp,
-  AlertTriangle,
   MessageCircle,
   DollarSign,
+  Bell,
 } from "lucide-react";
 import type { Project } from "@/types";
-import { OverviewTab, CommentsTab, DonationsTab, RatingsTab } from "./tabs";
+import { CommentsTab } from "./tabs/CommentsTab";
+import DonationsTab from "./tabs/DonationsTab";
+import OverviewTab from "./tabs/OverviewTab";
+import RatingsTab from "./tabs/RatingsTab";
+import UpdatesTab from "./tabs/UpdatesTab";
+
 
 interface ProjectTabsProps {
   project: Project;
 }
 
 export function ProjectTabs({ project }: ProjectTabsProps) {
+  console.log(project);
   return (
     <Tabs defaultValue="overview" className="w-full">
       <TabsList className="w-full">
         <TabsTrigger value="overview" className="gap-2">
           <TrendingUp className="w-4 h-4" />
           <span className="hidden sm:inline">Overview</span>
+        </TabsTrigger>
+        <TabsTrigger value="updates" className="gap-2">
+          <Bell className="w-4 h-4" />
+          <span className="hidden sm:inline">Updates</span>
+          {project.updates && project.updates.length > 0 && (
+            <span className="ml-1 text-xs">({project.updates.length})</span>
+          )}
         </TabsTrigger>
         <TabsTrigger value="comments" className="gap-2">
           <MessageCircle className="w-4 h-4" />
@@ -47,6 +59,10 @@ export function ProjectTabs({ project }: ProjectTabsProps) {
       <div className="mt-6">
         <TabsContent value="overview" className="space-y-6 m-0">
           <OverviewTab project={project} />
+        </TabsContent>
+
+        <TabsContent value="updates" className="space-y-6 m-0">
+          <UpdatesTab project={project} />
         </TabsContent>
 
         <TabsContent value="comments" className="space-y-6 m-0">

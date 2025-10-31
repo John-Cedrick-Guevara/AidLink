@@ -45,3 +45,21 @@ export async function restrictUser(
   revalidatePath("/dashboard");
   return { success: true, message: `User has been ${action}ed successfully` };
 }
+
+export async function sendUserNotification(
+  userId: string,
+  title: string,
+  message: string
+) {
+  try {
+    await createNotification(userId, "update", title, message);
+
+    revalidatePath("/dashboard");
+    return { success: true, message: "Notification sent successfully" };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Failed to send notification",
+    };
+  }
+}

@@ -19,9 +19,9 @@ import {
 } from "@/app/(private)/dashboard/(user)/hooks/useNotificationHooks";
 import { Notifications } from "@/types";
 
-const NotificationPanel = ({ userId }: { userId: string }) => {
+const NotificationPanel = ({ userId, initialNotifications }: { userId: string; initialNotifications: Notifications[] }) => {
   // swr hook to fetch notifications
-  const { notifications, isLoading, error } = useNotifications(userId);
+  const { notifications, isLoading, error } = useNotifications(userId, initialNotifications);
 
   const { markAsRead, removeNotification, markAllAsRead } =
     useNotificationsActions();

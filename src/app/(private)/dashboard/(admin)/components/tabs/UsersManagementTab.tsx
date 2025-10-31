@@ -6,8 +6,10 @@ import TableUI from "@/components/shared/TableUI";
 import { BellRing, Eye, UserX } from "lucide-react";
 import { User } from "@/types";
 import RestrictUserDialog from "../dialogs/user/RestrictUserDialog";
+import { NotifyUserDialog } from "../dialogs/user/NotifyUserDialog";
 import { useState } from "react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { useUserActions } from "../../hooks/adminUserHooks";
 
 interface UsersManagementTabProps {
   users: User[];
@@ -15,14 +17,28 @@ interface UsersManagementTabProps {
 
 const UsersManagementTab = ({ users }: UsersManagementTabProps) => {
   const filteredUsers = users.filter((u) => u.role !== "admin");
+
   // Restrict Dialog State
   const [isRestrictDialogOpen, setIsRestrictDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
+  // Notify Dialog State
+  const [isNotifyDialogOpen, setIsNotifyDialogOpen] = useState(false);
+  const [notifyUser, setNotifyUser] = useState<User | null>(null);
+
+  // Hooks
+  const { isPending, handleSendNotification } = useUserActions({});
 
   // Open Restrict Dialog
   const openRestrictDialog = (user: User) => {
     setSelectedUser(user);
     setIsRestrictDialogOpen(true);
+  };
+
+  // Open Notify Dialog
+  const openNotifyDialog = (user: User) => {
+    setNotifyUser(user);
+    setIsNotifyDialogOpen(true);
   };
 
   const tableHeads = [
@@ -57,7 +73,11 @@ const UsersManagementTab = ({ users }: UsersManagementTabProps) => {
 
       <TableCell className="hidden lg:table-cell text-right">
         <div className="flex items-center justify-end gap-2">
-          <Button size="sm" variant="ghost">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => openNotifyDialog(user)}
+          >
             <BellRing className="w-4 h-4" />
           </Button>
           <Button
@@ -113,7 +133,11 @@ const UsersManagementTab = ({ users }: UsersManagementTabProps) => {
 
           {/* Actions */}
           <div className="flex gap-2 pt-3 border-t mt-auto">
-            <Button variant="outline" className="flex-1">
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => openNotifyDialog(user)}
+            >
               <BellRing className="h-4 w-4 mr-1" />
               Notify
             </Button>
@@ -165,6 +189,14 @@ const UsersManagementTab = ({ users }: UsersManagementTabProps) => {
         user={selectedUser}
         open={isRestrictDialogOpen}
         onOpenChange={setIsRestrictDialogOpen}
+      />
+
+      <NotifyUserDialog
+        user={notifyUser}
+        open={isNotifyDialogOpen}
+        onOpenChange={setIsNotifyDialogOpen}
+        onSendNotification={handleSendNotification}
+        isPending={isPending}
       />
     </div>
   );

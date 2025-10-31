@@ -17,8 +17,9 @@ export interface Project {
   comments: Comment[];
   ratings?: Rating[];
   bank_details?: BankAccount[];
+  updates?: ProjectUpdate[];
 
-  createdAt: string;
+  created_at: string;
   updatedAt: string;
   target_start_date: string;
 }
@@ -99,6 +100,15 @@ export interface User {
 
   created_at: string;
   updated_at: string;
+}
+
+export interface ProjectUpdate {
+  id: string;
+  title: string;
+  content: string;
+  project: string;
+  user: string;
+  created_at: string;
 }
 
 export interface SectorList {

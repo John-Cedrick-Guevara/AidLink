@@ -18,25 +18,15 @@ import {
 } from "@/components/ui/popover";
 import NotificationPanel from "../shared/NotificationPanel";
 import { Badge } from "../ui/badge";
-import { dummyNotifications } from "@/data/dummyData";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { getAllNotifications } from "@/app/(private)/dashboard/(user)/server/notificationActions";
-
-export interface Notification {
-  id: string;
-  user_id: string;
-  type: "donation" | "approval" | "rejection" | "comment" | "update";
-  title: string;
-  message: string;
-  timestamp: string;
-  read: boolean;
-  projectId?: string;
-}
+import { Notifications } from "@/types";
 
 const Navbar = () => {
   const { user, logOut } = useUser();
   const pathname = usePathname();
+  const [notifications, setNotifications] = useState<Notifications[]>([]);
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const landingNavlinks =
     pathname === "/"
@@ -56,8 +46,9 @@ const Navbar = () => {
     const fetchNotifications = async () => {
       // Simulate fetching notifications from an API
       const notifications = await getAllNotifications(user!.id);
-      const unread = notifications.filter((n) => !n.read).length;
-      setUnreadCount(unread);
+      setNotifications(notifications);
+      const unreadCount = notifications.filter((n) => !n.read).length;
+      setUnreadCount(unreadCount);
     };
 
     if (user) {
@@ -140,7 +131,10 @@ const Navbar = () => {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent align="end" className="p-0 w-auto">
-                  <NotificationPanel userId={user.id} />
+                  <NotificationPanel
+                    initialNotifications={notifications}
+                    userId={user.id}
+                  />
                 </PopoverContent>
               </Popover>
 
