@@ -82,3 +82,6 @@ export function RatingsTab({ project }: RatingsTabProps) {
     </div>
   );
 }
+
+
+export default RatingsTab;

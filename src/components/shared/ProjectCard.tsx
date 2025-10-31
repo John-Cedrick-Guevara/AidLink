@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-import { ArrowRight, Calendar, Target, Users } from "lucide-react";
+import { ArrowRight, BookLock, Calendar, Target, Users } from "lucide-react";
 import { motion } from "motion/react";
 import { Badge } from "../ui/badge";
 import StarRating from "./StarRating";
@@ -13,13 +13,15 @@ import { Fund, Project } from "@/types";
 
 import RatingComponent from "@/app/(public)/projects/components/RatingComponent";
 import { DonationDialog } from "./donation-dialog/DonationDialog";
+import { UpdateDialog } from "./UpdateDialog";
+import { useUser } from "../providers/UserProvider";
 
 interface ProjectCardProps {
   project: Project;
-  showActions?: boolean;
 }
 
-const ProjectCard = ({ project, showActions = true }: ProjectCardProps) => {
+const ProjectCard = ({ project }: ProjectCardProps) => {
+  const { user } = useUser();
 
   const total_funds_raised = project.funds
     ? project.funds.reduce((sum: number, fund: Fund) => sum + fund.amount, 0)
@@ -31,6 +33,7 @@ const ProjectCard = ({ project, showActions = true }: ProjectCardProps) => {
 
   const progress = (total_funds_raised / project.target_funds) * 100;
 
+  const isDone = new Date(project.created_at) <= new Date();
 
   return (
     <motion.div
@@ -116,13 +119,21 @@ const ProjectCard = ({ project, showActions = true }: ProjectCardProps) => {
           </div>
 
           {/* Actions */}
-          {showActions && (
-            <div className="flex gap-2 pt-2">
-              <Link href={`/projects/${project.id}`} className="flex-1">
-                <Button variant="outline" className="w-full">
-                  View Details
-                </Button>
-              </Link>
+          <div className="flex gap-2 pt-2">
+            <Link href={`/projects/${project.id}`} className="flex-1">
+              <Button variant="outline" className="w-full">
+                View Details
+              </Button>
+            </Link>
+            {user && isDone ? (
+              <Button
+                disabled
+                className="flex-1 text-xs w-10 whitespace-break-spaces bg-gradient-primary hover:opacity-90 "
+              >
+                <BookLock className="w-4 h-4 mr-2" />
+                Project no longer accepting donations
+              </Button>
+            ) : user?.id !== project.proposer.id ? (
               <DonationDialog
                 projectId={project.id}
                 projectTitle={project.title}
@@ -134,8 +145,15 @@ const ProjectCard = ({ project, showActions = true }: ProjectCardProps) => {
                   Donate
                 </Button>
               </DonationDialog>
-            </div>
-          )}
+            ) : (
+              <UpdateDialog projectId={project.id} projectTitle={project.title}>
+                <Button className="flex-1 bg-gradient-primary hover:opacity-90">
+                  <Target className="w-4 h-4 mr-2" />
+                  Post Update
+                </Button>
+              </UpdateDialog>
+            )}
+          </div>
         </div>
       </Card>
     </motion.div>

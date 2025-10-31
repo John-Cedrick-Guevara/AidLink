@@ -47,3 +47,5 @@ export function OverviewTab({ project }: OverviewTabProps) {
     </div>
   );
 }
+
+export default OverviewTab;

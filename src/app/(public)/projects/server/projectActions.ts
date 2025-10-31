@@ -7,7 +7,7 @@ export async function getAllProjects() {
     const { data, error } = await supabase
       .from("projects")
       .select(
-        "*, sector (*), bank_details(*), funds (*), comments(*), proposer:users (*), ratings(*)"
+        "*, sector (*), bank_details(*), funds (*), comments(*), proposer:users (*), ratings(*), updates(*)"
       )
       .eq("status", "approved");
 
@@ -28,7 +28,7 @@ export async function getProjectById(projectId: string) {
   const { data, error } = await supabase
     .from("projects")
     .select(
-      "*, sector (*), bank_details(*), funds (*, user(full_name)), comments(*, user_id(full_name, id)), proposer:users (*), ratings(*)"
+      "*, sector (*), bank_details(*), funds (*, user(full_name)), comments(*, user_id(full_name, id)), proposer:users (*), ratings(*), updates(*)"
     )
     .eq("id", projectId)
     .single();

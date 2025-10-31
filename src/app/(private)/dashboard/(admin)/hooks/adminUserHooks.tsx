@@ -1,5 +1,6 @@
 import { useTransition } from "react";
-import { restrictUser } from "../server/usersActions";
+import { useRouter } from "next/navigation";
+import { restrictUser, sendUserNotification } from "../server/usersActions";
 import { toast } from "sonner";
 
 export function useUserActions({
@@ -8,6 +9,7 @@ export function useUserActions({
   onRestrictSuccess?: () => void;
 }) {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const handleToggleUserRestriction = async function (
     userId: string | null,
@@ -21,6 +23,7 @@ export function useUserActions({
 
         if (result.success) {
           toast.success(result.message);
+          router.refresh();
         }
       } catch (error) {
         toast.error("Failed to update user status");
@@ -28,5 +31,25 @@ export function useUserActions({
     });
   };
 
-  return { isPending, handleToggleUserRestriction };
+  const handleSendNotification = async function (
+    userId: string,
+    title: string,
+    message: string
+  ) {
+    startTransition(async () => {
+      try {
+        const result = await sendUserNotification(userId, title, message);
+
+        if (result.success) {
+          toast.success(result.message);
+        } else {
+          toast.error(result.message);
+        }
+      } catch (error) {
+        toast.error("Failed to send notification");
+      }
+    });
+  };
+
+  return { isPending, handleToggleUserRestriction, handleSendNotification };
 }
