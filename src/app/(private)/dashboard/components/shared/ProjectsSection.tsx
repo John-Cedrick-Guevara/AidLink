@@ -11,30 +11,20 @@ import EmptyState from "./EmptyState";
 interface ProjectsSectionProps {
   title: string;
   projects: Project[];
-  showViewAll?: boolean;
-  delay?: number;
 }
 
 const ProjectsSection = ({
   title,
   projects,
-  showViewAll = false,
-  delay = 0,
 }: ProjectsSectionProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay }}
       className="mb-12"
     >
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold">{title}</h2>
-        {showViewAll && (
-          <Link href="/projects">
-            <Button variant="outline">View All</Button>
-          </Link>
-        )}
       </div>
 
       {projects.length > 0 ? (

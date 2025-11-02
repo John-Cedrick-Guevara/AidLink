@@ -36,7 +36,28 @@ export default function ProjectPreview({
     initialProject
   );
 
-  console.log(project);
+  if (!project) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Project Not Found</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CardDescription>
+            The project you're looking for doesn't exist or has been removed.
+          </CardDescription>
+        </CardContent>
+        <CardFooter>
+          <Button onClick={() => router.push("/projects")} size="lg">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Projects
+          </Button>
+        </CardFooter>
+      </Card>
+    );
+  }
+
+
 
   // Error state
   if (error) {

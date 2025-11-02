@@ -1,3 +1,4 @@
+import { getTotalAmoaunt } from "@/lib/helper";
 import { createClient } from "@/lib/supabase/supabaseServer";
 
 export interface AdminDashboardStats {
@@ -39,18 +40,19 @@ export async function getAdminDashboardStats(): Promise<AdminDashboardStats> {
       .eq("status", "pending"),
 
     // Fund counts
-    supabase.from("funds").select("id", { count: "exact" }),
+    supabase.from("funds").select("id, amount"),
 
     // Sector counts
     supabase.from("sectors").select("id", { count: "exact" }),
   ]);
+
 
   return {
     totalUsers: totalUsers.count || 0,
     totalProjects: totalProjects.count || 0,
     totalPendingProjects: totalPendingProjects.count || 0,
     totalApprovedProjects: totalApprovedProjects.count || 0,
-    totalFunds: totalFunds.count || 0,
+    totalFunds: totalFunds.data ? getTotalAmoaunt(totalFunds.data) : 0,
     totalSectors: totalSectors.count || 0,
   };
 }

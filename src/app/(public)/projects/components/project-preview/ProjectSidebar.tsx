@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, MessageCircle, Users, Calendar } from "lucide-react";
+import { Heart, MessageCircle, Users, Calendar, BookLock } from "lucide-react";
 import type { Project } from "@/types";
 
 import RatingComponent from "../RatingComponent";
@@ -32,29 +32,44 @@ export function ProjectSidebar({ project }: ProjectSidebarProps) {
 
   const filePath = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/project_documents/${project.documents_url}`;
 
+  const isDone = new Date(project.created_at) <= new Date();
+
   return (
     <div className="space-y-6">
       {/* Support Card */}
       {user ? (
-        <Card className="glass-card p-6">
-          <h3 className="text-xl font-semibold mb-4">Support This Project</h3>
-          <DonationDialog
-            projectId={project.id}
-            projectTitle={project.title}
-            bankAccounts={project.bank_details}
-            sectorId={project.sector.id}
+        isDone ? (
+          <Button
+            disabled
+            className="w-full text-xs whitespace-break-spaces bg-gradient-primary hover:opacity-90 "
           >
-            <Button
-              className="w-full bg-gradient-primary hover:opacity-90"
-              size="lg"
+            <BookLock className="w-4 h-4 mr-2" />
+            Project no longer accepting donations
+          </Button>
+        ) : (
+          <Card className="glass-card p-6">
+            <h3 className="text-xl font-semibold mb-4">Support This Project</h3>
+            <DonationDialog
+              projectId={project.id}
+              projectTitle={project.title}
+              bankAccounts={project.bank_details}
+              sectorId={project.sector.id}
             >
-              <Heart className="w-5 h-5 mr-2" />
-              Donate Now
-            </Button>
-          </DonationDialog>
-        </Card>
+              <Button
+                className="w-full bg-gradient-primary hover:opacity-90"
+                size="lg"
+              >
+                <Heart className="w-5 h-5 mr-2" />
+                Donate Now
+              </Button>
+            </DonationDialog>
+          </Card>
+        )
       ) : (
-        <LockCard title={"Log In to Donate"} message={"For secure access to donation options, please log in."} />
+        <LockCard
+          title={"Log In to Donate"}
+          message={"For secure access to donation options, please log in."}
+        />
       )}
 
       {/* Project Stats */}
@@ -110,15 +125,19 @@ export function ProjectSidebar({ project }: ProjectSidebarProps) {
             <p className="text-sm">{project.proposer?.email || "N/A"}</p>
           </div>
           <div>
-            <p className="text-sm text-muted-foreground">Role</p>
-            <Link
-              href={filePath}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 underline mt-2 block"
-            >
-              Supporting Documents
-            </Link>
+            <p className="text-sm text-muted-foreground">Supporting Documents</p>
+            {project.documents_url ? (
+              <Link
+                href={filePath}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline mt-2 block"
+              >
+                Supporting Documents
+              </Link>
+            ) : (
+              <p className="text-sm">N/A</p>
+            )}
           </div>
         </div>
       </Card>

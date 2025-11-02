@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/supabaseServer";
 import { redirect } from "next/navigation";
 
-import { getUserInitialData } from "./(user)/server/getUserDashboard";
 import AdminDashboard from "./(admin)/AdminDashboard";
 import UserDashboard from "./(user)/UserDashboard";
 import { getAllUsersForAdmin } from "./(admin)/server/usersActions";
@@ -9,6 +8,8 @@ import { getAllSectorsForAdmin } from "./(admin)/server/sectorActions";
 import { getAllProjectsForAdmin } from "./(admin)/server/projectActions";
 import { getAllProjects, getProjectReceipts } from "@/app/(public)/projects/server/projectActions";
 import { FundSummary } from "@/types";
+import { getAdminDashboardStats } from "./(admin)/server/adminDashboardStats";
+import { getUserDashboardData } from "./(user)/server/getUserDashboard";
 
 const page = async () => {
   const supabase = await createClient();
@@ -27,19 +28,20 @@ const page = async () => {
     const sectors = await getAllSectorsForAdmin();
     const users = await getAllUsersForAdmin();
     const projects = await getAllProjectsForAdmin();
+    const stats = await getAdminDashboardStats();
 
     // Redirect to admin dashboard
     return (
-      <AdminDashboard sectors={sectors} users={users} projects={projects} />
+      <AdminDashboard sectors={sectors} users={users} projects={projects} stats={stats} />
     );
   } else if (userRole === "user") {
     // Redirect to user dashboard
-    const dashboardData = await getUserInitialData(user?.id);
+    const stats = await getUserDashboardData(user?.id);
     const projects = await getAllProjects();
     const receipts = await getProjectReceipts(user.id);
 
-console.log(receipts);
-    return <UserDashboard initialData={dashboardData} projects={projects} receipts={receipts as any}/>;
+    console.log(receipts);
+    return <UserDashboard stats={stats} receipts={receipts as any}/>;
   }
 };
 
