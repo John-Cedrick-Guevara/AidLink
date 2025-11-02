@@ -17,14 +17,16 @@ import ProjectsManagementTab from "./components/tabs/ProjectsManagementTab";
 import UsersManagementTab from "./components/tabs/UsersManagementTab";
 import { Project, Sector, User } from "@/types";
 import SectorsManagementTab from "./components/tabs/SectorsManagementTab";
+import { AdminDashboardStats } from "./server/adminDashboardStats";
 
 interface AdminDashboardProps {
   sectors: Sector[];
   users: User[];
-  projects: Project[]; 
+  projects: Project[];
+  stats: AdminDashboardStats;
 }
 
-const AdminDashboard = ({ sectors, users, projects }: AdminDashboardProps) => {
+const AdminDashboard = ({ sectors, users, projects, stats }: AdminDashboardProps) => {
   // State management
   const [projectFilter, setProjectFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -95,13 +97,13 @@ const AdminDashboard = ({ sectors, users, projects }: AdminDashboardProps) => {
           </motion.div>
 
           {/* Stats Cards */}
-          {/* <AdminStatCards
+          <AdminStatCards
             totalProjects={stats.totalProjects}
-            pendingProjects={stats.pendingProjects}
-            approvedProjects={stats.approvedProjects}
+            pendingProjects={stats.totalPendingProjects}
+            approvedProjects={stats.totalApprovedProjects}
             totalUsers={stats.totalUsers}
-            totalDonations={stats.totalDonations}
-          /> */}
+            totalDonations={stats.totalFunds}
+          />
 
           {/* Tabbed Management Sections */}
           <motion.div

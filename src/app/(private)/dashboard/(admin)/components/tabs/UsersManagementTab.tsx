@@ -64,7 +64,7 @@ const UsersManagementTab = ({ users }: UsersManagementTabProps) => {
       </TableCell>
 
       <TableCell className="hidden lg:table-cell">
-        {user.fundsDonated}
+        {user.fundsDonated}k
       </TableCell>
 
       <TableCell className="hidden lg:table-cell">
@@ -122,12 +122,12 @@ const UsersManagementTab = ({ users }: UsersManagementTabProps) => {
               <p className="text-xs text-muted-foreground">
                 Projects Contributed
               </p>
-              <p className="font-medium text-lg">{user.projectsCount}10</p>
+              <p className="font-medium text-lg">{user.projectsCount}</p>
             </div>
 
             <div className="mb-3">
               <p className="text-xs text-muted-foreground">Total Donations</p>
-              <p className="font-medium text-lg">{user.fundsDonated}200K</p>
+              <p className="font-medium text-lg">{user.fundsDonated}k</p>
             </div>
           </div>
 

@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/supabaseServer";
 import { revalidatePath } from "next/cache";
 import { createNotification } from "../../(user)/server/notificationActions";
+import { getTotalAmoaunt } from "@/lib/helper";
 
 export async function getAllUsersForAdmin() {
   const supabase = await createClient();
@@ -12,7 +13,11 @@ export async function getAllUsersForAdmin() {
   if (error) {
     throw new Error(`Error fetching users: ${error.message}`);
   }
-  return data;
+  return data.map(user => ({
+    ...user,
+    fundsDonated: user.funds.length > 0 ? getTotalAmoaunt(user.funds) / 1000 : 0,
+    projectsCount: user.projects ? user.projects.length : 0,
+  }));
 }
 
 export async function restrictUser(

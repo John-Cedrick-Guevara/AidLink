@@ -13,7 +13,7 @@ import ReceiptDialog from "../components/shared/ReceiptDialog";
 import ReceiptsTable from "../components/shared/ReceiptsTable";
 import StatCard from "../components/shared/StatCard";
 
-import { userInitialData } from "./server/getUserDashboard";
+import { AdminStatsData } from "./server/getUserDashboard";
 
 import { FundSummary, Project } from "@/types";
 import ProjectCard from "@/components/shared/ProjectCard";
@@ -22,16 +22,11 @@ import { useReceiptActions } from "./hooks/useReceiptHooks";
 import ProjectsSection from "../components/shared/ProjectsSection";
 
 export interface UserDashboardProps {
-  initialData: userInitialData;
-  projects: Project[];
+  stats: AdminStatsData;
   receipts: FundSummary[] | null;
 }
 
-const UserDashboard = ({
-  initialData,
-  projects,
-  receipts,
-}: UserDashboardProps) => {
+const UserDashboard = ({ stats,  receipts }: UserDashboardProps) => {
   const [selectedReceipt, setSelectedReceipt] = useState<FundSummary | null>(
     null
   );
@@ -46,13 +41,13 @@ const UserDashboard = ({
   });
 
   // Data
-  const userProjects = projects.filter((p) => p.proposer.id === user?.id);
 
   const handleViewReceipt = (receipt: FundSummary) => {
     setSelectedReceipt(receipt);
     setReceiptDialogOpen(true);
   };
 
+  console.log(stats);
   return (
     <div className="min-h-screen">
       <div className="pt-26 pb-16">
@@ -64,17 +59,17 @@ const UserDashboard = ({
           />
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <StatCard
               title="My Projects"
-              value={initialData.myProjectsCount}
+              value={stats.myProjectsCount}
               icon={FolderOpen}
               badgeText="Total"
               gradientClass="bg-gradient-primary"
             />
             <StatCard
               title="Active Campaigns"
-              value={initialData.myProjectsCount}
+              value={stats.myProjectsCount}
               icon={TrendingUp}
               badgeText="Active"
               badgeVariant="success"
@@ -82,34 +77,18 @@ const UserDashboard = ({
             />
             <StatCard
               title="Total Donations"
-              value={`${(initialData.totalDonatedAmount / 1000).toFixed(0)}K`}
+              value={`${(stats.totalDonatedAmount / 1000).toFixed(0)}K`}
               icon={Heart}
               badgeText="Raised"
               gradientClass="bg-gradient-primary"
-            />
-            <StatCard
-              title="Funding Rate"
-              value={`${
-                initialData.myProjectsCount > 0
-                  ? (
-                      (initialData.totalDonatedAmount /
-                        initialData.myProjectsCount) *
-                      100
-                    ).toFixed(0)
-                  : 0
-              }%`}
-              icon={Activity}
-              badgeText="Progress"
-              gradientClass="bg-gradient-accent"
             />
           </div>
 
           {/* My Projects Section */}
           <ProjectsSection
             title="My Projects"
-            projects={userProjects.slice(0, 3)}
-            showViewAll={true}
-            delay={0.1}
+            projects={stats.myProjects}
+         
           />
 
           {/* Funding Receipts Section */}
