@@ -125,34 +125,38 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
                 View Details
               </Button>
             </Link>
-            {user && isDone ? (
-              <Button
-                disabled
-                className="flex-1 text-xs w-10 whitespace-break-spaces bg-gradient-primary hover:opacity-90 "
-              >
-                <BookLock className="w-4 h-4 mr-2" />
-                Project no longer accepting donations
-              </Button>
-            ) : user?.id !== project.proposer.id ? (
-              <DonationDialog
-                projectId={project.id}
-                projectTitle={project.title}
-                bankAccounts={project.bank_details}
-                sectorId={project.sector.id}
-              >
-                <Button className="flex-1 bg-gradient-accent hover:opacity-90">
-                  <Target className="w-4 h-4 mr-2" />
-                  Donate
+            {user &&
+              (isDone ? (
+                <Button
+                  disabled
+                  className="flex-1 text-xs w-10 whitespace-break-spaces bg-gradient-primary hover:opacity-90 "
+                >
+                  <BookLock className="w-4 h-4 mr-2" />
+                  Project no longer accepting donations
                 </Button>
-              </DonationDialog>
-            ) : (
-              <UpdateDialog projectId={project.id} projectTitle={project.title}>
-                <Button className="flex-1 bg-gradient-primary hover:opacity-90">
-                  <Target className="w-4 h-4 mr-2" />
-                  Post Update
-                </Button>
-              </UpdateDialog>
-            )}
+              ) : user?.id !== project.proposer.id ? (
+                <DonationDialog
+                  projectId={project.id}
+                  projectTitle={project.title}
+                  bankAccounts={project.bank_details}
+                  sectorId={project.sector.id}
+                >
+                  <Button className="flex-1 bg-gradient-accent hover:opacity-90">
+                    <Target className="w-4 h-4 mr-2" />
+                    Donate
+                  </Button>
+                </DonationDialog>
+              ) : (
+                <UpdateDialog
+                  projectId={project.id}
+                  projectTitle={project.title}
+                >
+                  <Button className="flex-1 bg-gradient-primary hover:opacity-90">
+                    <Target className="w-4 h-4 mr-2" />
+                    Post Update
+                  </Button>
+                </UpdateDialog>
+              ))}
           </div>
         </div>
       </Card>
