@@ -19,13 +19,10 @@
 
 import { Suspense, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import {
-  LoadingState,
-  ErrorState,
-  SuccessState,
-  PaymentForm,
-} from "./components";
+
 import { usePaymentProcessor, usePaymentForm, useProjectData } from "./hooks";
+import { PaymentForm } from "./components/PaymentForm";
+import { LoadingState, ErrorState, SuccessState } from "./components/PaymentStates";
 
 function PaymentPageContent() {
   const searchParams = useSearchParams();

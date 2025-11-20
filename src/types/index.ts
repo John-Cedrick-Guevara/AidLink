@@ -26,9 +26,9 @@ export interface Project {
 
 export interface BankAccount {
   id: string;
-  bank_name: string;
-  account_number: string;
-  account_name: string;
+  bank_name: {content: string; iv: string; tag: string};
+  account_number: {content: string; iv: string; tag: string};
+  account_name: {content: string; iv: string; tag: string};
 }
 
 export interface Notifications {

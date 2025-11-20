@@ -3,11 +3,13 @@
 import { createClient } from "@/lib/supabase/supabaseServer";
 import { revalidatePath } from "next/cache";
 import { ProposalFormData } from "../types";
+import { encrypt } from "@/lib/crypto";
+import { en } from "zod/v4/locales";
 
 interface BankAccountInsert {
-  account_name: string;
-  account_number: string;
-  bank_name: string;
+  account_name: { content: string; iv: string; tag: string };
+  account_number: { content: string; iv: string; tag: string };
+  bank_name: { content: string; iv: string; tag: string };
   user: string;
   project: string;
 }
@@ -94,9 +96,9 @@ export async function handleCreateProject(formData: ProposalFormData) {
     // Insert bank account details
     const bankAccountInserts: BankAccountInsert[] = formData.bank_accounts.map(
       (account) => ({
-        account_name: account.account_name,
-        account_number: account.account_number,
-        bank_name: account.bank_name,
+        account_name: encrypt(account.account_name),
+        account_number: encrypt(account.account_number),
+        bank_name: encrypt(account.bank_name),
         user: userId,
         project: project.id,
       })
@@ -114,8 +116,6 @@ export async function handleCreateProject(formData: ProposalFormData) {
         message: "Failed to save bank account details. Please try again.",
       };
     }
-
-    console.log(formData.supporting_docs);
 
     // Revalidate relevant paths
     revalidatePath("/dashboard");

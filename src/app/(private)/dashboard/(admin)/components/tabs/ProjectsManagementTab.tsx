@@ -59,6 +59,7 @@ const ProjectsManagementTab = ({ projects }: ProjectsManagementTabProps) => {
     "Sector",
     "Target",
     "Status",
+    "Submitted At",
     "Actions",
   ];
 
@@ -86,6 +87,10 @@ const ProjectsManagementTab = ({ projects }: ProjectsManagementTabProps) => {
 
       <TableCell className="hidden lg:table-cell">
         <StatusBadge type="project" status={project.status} />
+      </TableCell>
+
+      <TableCell className="hidden lg:table-cell">
+        {new Date(project.created_at).toLocaleDateString()}
       </TableCell>
 
       <TableCell className="hidden lg:table-cell text-right">

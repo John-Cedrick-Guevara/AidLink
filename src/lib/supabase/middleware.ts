@@ -48,11 +48,14 @@ export async function updateSession(request: NextRequest) {
     "/",
   ];
 
-  if (
-    !user &&
-    !publicPaths.includes(request.nextUrl.pathname) &&
-    request.nextUrl.pathname !== "/"
-  ) {
+  // Check if path is public or starts with a public path
+  const isPublicPath = publicPaths.some(
+    (path) =>
+      request.nextUrl.pathname === path ||
+      request.nextUrl.pathname.startsWith(path + "/")
+  );
+
+  if (!user && !isPublicPath) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
     url.pathname = "/unauthorized";

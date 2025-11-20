@@ -32,7 +32,7 @@ export function ProjectSidebar({ project }: ProjectSidebarProps) {
 
   const filePath = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/project_documents/${project.documents_url}`;
 
-  const isDone = new Date(project.created_at) <= new Date();
+  const isDone = new Date(project.target_start_date) <= new Date(); 
 
   return (
     <div className="space-y-6">
