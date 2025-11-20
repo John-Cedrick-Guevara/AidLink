@@ -1,5 +1,6 @@
+import { decrypt } from "@/lib/crypto";
 import { createClient } from "@/lib/supabase/supabaseServer";
-
+import { BankAccount } from "@/types";
 
 export async function getAllProjects() {
   try {
@@ -16,7 +17,21 @@ export async function getAllProjects() {
       return [];
     }
 
-    return data || [];
+    return data
+      ? data.map((p) => ({
+          ...p,
+          bank_details: p.bank_details.map((account: BankAccount) => ({
+            ...account,
+            account_name: account.account_name
+              ? decrypt(account.account_name)
+              : "",
+            account_number: account.account_number
+              ? decrypt(account.account_number)
+              : "",
+            bank_name: account.bank_name ? decrypt(account.bank_name) : "",
+          })),
+        }))
+      : [];
   } catch (error) {
     console.error("Error fetching projects:", error);
     return [];
@@ -38,7 +53,23 @@ export async function getProjectById(projectId: string) {
     return null;
   }
 
-  return data || null;
+  return data
+    ? {
+        ...data,
+        bank_details: data.bank_details
+          ? data.bank_details.map((account: BankAccount) => ({
+              ...account,
+              account_name: account.account_name
+                ? decrypt(account.account_name)
+                : "",
+              account_number: account.account_number
+                ? decrypt(account.account_number)
+                : "",
+              bank_name: account.bank_name ? decrypt(account.bank_name) : "",
+            }))
+          : [],
+      }
+    : null;
 }
 
 export async function getProjectReceipts(userId: string) {

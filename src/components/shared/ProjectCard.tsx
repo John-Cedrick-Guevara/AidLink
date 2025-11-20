@@ -33,7 +33,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
 
   const progress = (total_funds_raised / project.target_funds) * 100;
 
-  const isDone = new Date(project.created_at) <= new Date();
+  const isDone = new Date(project.target_start_date) <= new Date();
 
   return (
     <motion.div

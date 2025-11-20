@@ -1,13 +1,4 @@
-/**
- * Type definitions for Donation Dialog
- */
-
-export interface BankAccount {
-  id: string;
-  bank_name: string;
-  account_number: string;
-  account_name: string;
-}
+import { BankAccount } from "@/types";
 
 
 

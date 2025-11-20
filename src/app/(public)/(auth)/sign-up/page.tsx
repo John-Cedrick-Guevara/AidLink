@@ -13,10 +13,6 @@ import { signUpAction } from "../actions";
 const signUpPage = () => {
   const [state, action, loading] = useActionState(signUpAction, null);
 
-  useEffect(() => {
-    console.log(state);
-  }, [state]);
-
   return (
     <div className="min-h-screen pt-20 flex items-center justify-center p-4 bg-linear-to-br from-background via-primary/5 to-accent/5">
       <motion.div

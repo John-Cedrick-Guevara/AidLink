@@ -52,6 +52,8 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
       .toUpperCase();
   };
 
+  console.log(project);
+
   return (
     <Card className="glass-card p-6 md:p-8">
       <div className="space-y-6">
