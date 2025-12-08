@@ -1,10 +1,13 @@
 "use client";
 
+import { useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreditCard, Building2 } from "lucide-react";
 import { EmailInput } from "./EmailInput";
 import { BankAccountList } from "./BankAccountList";
 import type { PaymentMethod, BankAccount } from "./types";
+import { decrypt } from "@/lib/crypto";
+import { BankAccount as DecryptedBankAccount } from "@/app/(private)/proposal-form/types";
 
 interface PaymentMethodTabsProps {
   paymentMethod: PaymentMethod;
@@ -23,6 +26,16 @@ export const PaymentMethodTabs = ({
   onEmailChange,
   onReceiptFileSelect,
 }: PaymentMethodTabsProps) => {
+  // Decrypt bank accounts for display
+  const decryptedBankAccounts = useMemo<DecryptedBankAccount[]>(() => {
+    return bankAccounts.map((account) => ({
+      id: account.id,
+      account_name: decrypt(account.account_name),
+      account_number: decrypt(account.account_number),
+      bank_name: decrypt(account.bank_name),
+    }));
+  }, [bankAccounts]);
+
   return (
     <Tabs
       value={paymentMethod}
@@ -50,7 +63,7 @@ export const PaymentMethodTabs = ({
       {/* Bank Transfer Tab */}
       <TabsContent value="manual" className="space-y-4 mt-4">
         <BankAccountList
-          bankAccounts={bankAccounts}
+          bankAccounts={decryptedBankAccounts}
           onFileSelect={onReceiptFileSelect}
         />
       </TabsContent>

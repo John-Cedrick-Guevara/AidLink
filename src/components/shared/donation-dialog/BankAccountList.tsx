@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Building2, Copy, Check, Upload, X, FileImage } from "lucide-react";
 import { toast } from "sonner";
-import type { BankAccount } from "./types";
+import { BankAccount } from "@/app/(private)/proposal-form/types";
+
 
 interface BankAccountListProps {
   bankAccounts: BankAccount[];

@@ -1,6 +1,6 @@
 import { BankAccount } from "@/types";
 
-
+export type { BankAccount };
 
 export type PaymentMethod = "direct" | "manual";
 
