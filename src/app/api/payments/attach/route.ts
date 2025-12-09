@@ -6,6 +6,7 @@ export async function POST(req: Request) {
 
     const secretKey = process.env.PAYMONGO_SECRET_KEY;
 
+
     if (!secretKey) {
       return NextResponse.json(
         { success: false, message: "Payment configuration error" },

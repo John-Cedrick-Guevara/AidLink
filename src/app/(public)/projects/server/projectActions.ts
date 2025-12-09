@@ -1,6 +1,6 @@
 import { decrypt } from "@/lib/crypto";
 import { createClient } from "@/lib/supabase/supabaseServer";
-import { BankAccount } from "@/types";
+import { EncryptedBankAccount } from "@/types";
 
 export async function getAllProjects() {
   try {
@@ -17,11 +17,12 @@ export async function getAllProjects() {
       return [];
     }
 
-    return data
+
+    return data && data.length > 0
       ? data.map((p) => ({
           ...p,
-          bank_details: p.bank_details.map((account: BankAccount) => ({
-            ...account,
+          bank_details: p.bank_details.map((account: EncryptedBankAccount) => ({
+            id: account.id,
             account_name: account.account_name
               ? decrypt(account.account_name)
               : "",
@@ -57,8 +58,8 @@ export async function getProjectById(projectId: string) {
     ? {
         ...data,
         bank_details: data.bank_details
-          ? data.bank_details.map((account: BankAccount) => ({
-              ...account,
+          ? data.bank_details.map((account: EncryptedBankAccount) => ({
+              id: account.id,
               account_name: account.account_name
                 ? decrypt(account.account_name)
                 : "",

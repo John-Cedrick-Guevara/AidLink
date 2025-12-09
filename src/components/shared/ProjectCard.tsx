@@ -23,6 +23,8 @@ interface ProjectCardProps {
 const ProjectCard = ({ project }: ProjectCardProps) => {
   const { user } = useUser();
 
+ 
+
   const total_funds_raised = project.funds
     ? project.funds.reduce((sum: number, fund: Fund) => sum + fund.amount, 0)
     : 0;

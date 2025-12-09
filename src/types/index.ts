@@ -16,7 +16,7 @@ export interface Project {
   sector: Sector;
   comments: Comment[];
   ratings?: Rating[];
-  bank_details?: BankAccount[];
+  bank_details?: DecryptedBankAccount[];
   updates?: ProjectUpdate[];
 
   created_at: string;
@@ -24,12 +24,24 @@ export interface Project {
   target_start_date: string;
 }
 
-export interface BankAccount {
+// Raw encrypted bank account from database
+export interface EncryptedBankAccount {
   id: string;
-  bank_name: {content: string; iv: string; tag: string};
-  account_number: {content: string; iv: string; tag: string};
-  account_name: {content: string; iv: string; tag: string};
+  bank_name: { content: string; iv: string; tag: string };
+  account_number: { content: string; iv: string; tag: string };
+  account_name: { content: string; iv: string; tag: string };
 }
+
+// Decrypted bank account for client use
+export interface DecryptedBankAccount {
+  id: string;
+  bank_name: string;
+  account_number: string;
+  account_name: string;
+}
+
+// For backwards compatibility
+export type BankAccount = EncryptedBankAccount;
 
 export interface Notifications {
   id: string;
@@ -39,7 +51,6 @@ export interface Notifications {
   created_at: string;
   read: boolean;
 }
-
 
 export interface Fund {
   id: string;
@@ -68,8 +79,7 @@ export interface FundSummary {
     title: string;
     proposer: string;
   };
-  
-  
+
   user: {
     email: string;
     full_name: string;

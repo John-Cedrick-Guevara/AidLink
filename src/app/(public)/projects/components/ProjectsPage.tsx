@@ -16,6 +16,11 @@ const ProjectsPage = ({ initialProjects }: { initialProjects: Project[] }) => {
   const { projects, isLoading, error } = useProjects(initialProjects);
   const router = useRouter();
 
+
+  if(projects.length === 0) {
+    return null;
+  }
+
   // Error state
   if (error) {
     return (

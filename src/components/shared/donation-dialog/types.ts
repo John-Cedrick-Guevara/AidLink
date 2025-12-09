@@ -1,6 +1,4 @@
-import { BankAccount } from "@/types";
-
-export type { BankAccount };
+import { BankAccount } from "@/app/(private)/proposal-form/types";
 
 export type PaymentMethod = "direct" | "manual";
 

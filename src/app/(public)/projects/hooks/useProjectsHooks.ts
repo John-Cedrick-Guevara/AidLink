@@ -10,6 +10,17 @@ import { useEffect } from "react";
  * Hook to fetch all projects with SWR caching + Supabase realtime
  * Uses API route for client-side fetching
  */
+
+
+const fetcher = (url: string) =>
+  fetch(url)
+    .then((res) => {
+      if (!res.ok) throw new Error("Failed to fetch");
+      return res.json();
+    })
+    .then((res) => res.data);
+
+
 export function useProjects(initialData?: Project[]) {
   const {
     data: projects,
@@ -17,7 +28,7 @@ export function useProjects(initialData?: Project[]) {
     isLoading,
     isValidating,
     mutate,
-  } = useSWR<Project[]>(CACHE_KEYS.PROJECTS, {
+  } = useSWR<Project[]>(CACHE_KEYS.PROJECTS, fetcher, {
     fallbackData: initialData,
     revalidateOnMount: !initialData, // Only revalidate if no initial data
     revalidateOnFocus: false, // Realtime handles updates
@@ -71,7 +82,9 @@ export function useProject(
     isLoading,
     isValidating,
     mutate,
-  } = useSWR<Project | null>(projectId ? CACHE_KEYS.PROJECT(projectId) : null, {
+  } = useSWR<Project | null>(projectId ? CACHE_KEYS.PROJECT(projectId) : null,
+  fetcher,
+  {
     fallbackData: initialData,
     revalidateOnMount: !initialData, // Only revalidate if no initial data
     revalidateOnFocus: false, // Realtime handles updates

@@ -7,6 +7,8 @@ export async function GET() {
     const supabase = await createClient();
 
     const result = await getAllProjects();
+
+    console.log(result);
     if (!result) {
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }

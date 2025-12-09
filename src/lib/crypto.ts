@@ -45,19 +45,25 @@ export function decrypt({
   content: string;
   iv: string;
   tag: string;
-}) {
-  const decipher = crypto.createDecipheriv(
-    ALGO,
-    SECRET_KEY,
-    Buffer.from(iv, "hex")
-  );
+}): string {
+  try {
+    const decipher = crypto.createDecipheriv(
+      ALGO,
+      SECRET_KEY,
+      Buffer.from(iv, "hex")
+    );
 
-  decipher.setAuthTag(Buffer.from(tag, "hex"));
+    decipher.setAuthTag(Buffer.from(tag, "hex"));
 
-  const decrypted = Buffer.concat([
-    decipher.update(Buffer.from(content, "hex")),
-    decipher.final(),
-  ]);
+    const decrypted = Buffer.concat([
+      decipher.update(Buffer.from(content, "hex")),
+      decipher.final(),
+    ]);
 
-  return decrypted.toString("utf8");
+    return decrypted.toString("utf8");
+  } catch (error) {
+    // Decryption failed - likely because encryption key changed
+    console.error("Decryption failed - encryption key mismatch:", error);
+    return "[Encrypted Data - Key Changed]";
+  }
 }
