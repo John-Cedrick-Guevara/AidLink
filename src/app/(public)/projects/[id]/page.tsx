@@ -8,6 +8,7 @@ const project = async ({ params }: { params: Promise<{ id: string }> }) => {
   const user = await getCurrentUser();
 
   const projectData = await getProjectById(id);
+  console.log(user)
 
   return (
     <ProjectPreview

@@ -37,7 +37,6 @@ const page = async () => {
   } else if (userRole === "user") {
     // Redirect to user dashboard
     const stats = await getUserDashboardData(user?.id);
-    const projects = await getAllProjects();
     const receipts = await getProjectReceipts(user.id);
 
     console.log(receipts);

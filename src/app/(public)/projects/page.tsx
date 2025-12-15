@@ -7,8 +7,6 @@ const page = async () => {
   const projects = await getAllProjects();
   const user = await getCurrentUser();
 
-console.log("KEY:", process.env.ENCRYPTION_KEY);
-
   return <ProjectsPage initialProjects={projects} />;
 };
 

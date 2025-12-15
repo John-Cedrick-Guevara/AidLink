@@ -64,6 +64,8 @@ export const useDonationForm = ({
       if (paymentMethod === "direct") {
         await processDirectPayment(donationData, projectId, sectorId);
       } else {
+
+        console.log(receiptFile)
         // Validate receipt file exists
         if (!receiptFile) {
           toast.error("Receipt required", {
@@ -103,7 +105,7 @@ export const useDonationForm = ({
     } finally {
       setIsProcessing(false);
     }
-  }, [amount, email, paymentMethod, projectId, sectorId, validateForm]);
+  }, [amount, email, paymentMethod, projectId, sectorId, receiptFile, validateForm]);
 
   /**
    * Reset form to initial state
@@ -127,6 +129,7 @@ export const useDonationForm = ({
    * Handle receipt file selection
    */
   const handleReceiptFileSelect = useCallback((file: File | null) => {
+    console.log(file)
     setReceiptFile(file);
   }, []);
 

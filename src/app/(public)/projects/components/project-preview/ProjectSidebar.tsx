@@ -88,7 +88,7 @@ export function ProjectSidebar({ project }: ProjectSidebarProps) {
               Backers
             </span>
             <span className="font-semibold">
-              {project.funds?.filter((f) => f.status === "approve").length || 0}
+              {project.funds?.filter((f) => f.status === "paid").length || 0}
             </span>
           </div>
           <div className="flex items-center justify-between">

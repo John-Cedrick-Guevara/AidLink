@@ -1,16 +1,22 @@
 "use client";
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Heart, Mail, Lock, LogIn } from "lucide-react";
+import { Heart, Mail, Lock, LogIn, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { signInAction } from "../actions";
 
 const signInPage = () => {
   const [state, action, loading] = useActionState(signInAction, null);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    if (state?.error) {
+      setError(state.error);
+    }
+  }, [state]);
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 pt-20 bg-linear-to-br from-background via-primary/5 to-accent/5">
@@ -35,6 +41,13 @@ const signInPage = () => {
             <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
             <p className="text-muted-foreground">Sign in to your account</p>
           </div>
+
+          {error && (
+            <div className="mb-6 bg-red-100 text-red-500 p-2 rounded flex items-center justify-start gap-3">
+              <AlertCircle className="h-4 w-4" />
+              <p>{error}</p>
+            </div>
+          )}
 
           <form action={action} className="space-y-6">
             <div className="space-y-2">

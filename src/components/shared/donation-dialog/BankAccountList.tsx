@@ -64,8 +64,10 @@ export const BankAccountList = ({
         return;
       }
 
+      
       setSelectedFile(file);
       onFileSelect?.(file);
+      console.log(file)
 
       // Create preview for images
       if (file.type.startsWith("image/")) {
@@ -108,7 +110,6 @@ export const BankAccountList = ({
       </Card>
     );
   }
-
   return (
     <>
       <p className="text-sm text-muted-foreground">

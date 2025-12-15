@@ -66,6 +66,7 @@ export const DonationDialog = ({
 
   // Render
 
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>

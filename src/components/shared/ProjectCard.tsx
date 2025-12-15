@@ -37,6 +37,8 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
 
   const isDone = new Date(project.target_start_date) <= new Date();
 
+console.log(project)
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -80,9 +82,9 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
             </div>
             <Progress value={progress} className="h-2" />
             <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>{Math.round(progress)}% funded</span>
+              <span>{Math.round(progress > 100 ? 100 : progress)}% funded</span>
               <span>
-                ₱{(project.target_funds - total_funds_raised).toLocaleString()}{" "}
+                ₱{((project.target_funds - total_funds_raised) < 0 ? 0 : project.target_funds - total_funds_raised).toLocaleString()}{" "}
                 remaining
               </span>
             </div>

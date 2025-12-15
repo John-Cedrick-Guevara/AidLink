@@ -2,6 +2,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { getTotalAmoaunt } from "@/lib/helper";
 import type { Project } from "@/types";
 
 interface ProjectProgressProps {
@@ -10,10 +11,9 @@ interface ProjectProgressProps {
 
 export function ProjectProgress({ project }: ProjectProgressProps) {
   // Calculate total funds from funds array
-  const currentFunds =
-    project.funds?.reduce((sum, fund) => {
-      return fund.status === "approve" ? sum + fund.amount : sum;
-    }, 0) || 0;
+  const paidFunds = project.funds.filter((fund) => fund.status === "paid");
+
+  const currentFunds = getTotalAmoaunt(paidFunds);
 
   const targetFunds = project.target_funds || 1;
   const progress = Math.min((currentFunds / targetFunds) * 100, 100);
@@ -45,7 +45,7 @@ export function ProjectProgress({ project }: ProjectProgressProps) {
 
         {/* Remaining Amount */}
         <p className="text-sm text-muted-foreground text-center">
-          ₱{remaining.toLocaleString()} remaining
+          ₱{(remaining < 0 ? 0 : remaining).toLocaleString()} remaining
         </p>
       </div>
     </div>

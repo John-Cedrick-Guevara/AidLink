@@ -56,7 +56,7 @@ export interface Fund {
   id: string;
   amount: number;
   project: string;
-  status: "pending" | "approve" | "failed";
+  status: "pending" | "paid" | "failed";
 
   user: User;
   sector: Sector;
