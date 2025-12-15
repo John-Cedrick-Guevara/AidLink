@@ -26,7 +26,12 @@ interface AdminDashboardProps {
   stats: AdminDashboardStats;
 }
 
-const AdminDashboard = ({ sectors, users, projects, stats }: AdminDashboardProps) => {
+const AdminDashboard = ({
+  sectors,
+  users,
+  projects,
+  stats,
+}: AdminDashboardProps) => {
   // State management
   const [projectFilter, setProjectFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -40,12 +45,10 @@ const AdminDashboard = ({ sectors, users, projects, stats }: AdminDashboardProps
 
   // Project Handlers
   const handleApprove = (projectId: string, projectTitle: string) => {
-   
     toast.success(`Project "${projectTitle}" has been approved`);
   };
 
   const handleReject = (projectId: string, projectTitle: string) => {
- 
     toast.error(`Project "${projectTitle}" has been rejected`);
   };
 
@@ -112,28 +115,15 @@ const AdminDashboard = ({ sectors, users, projects, stats }: AdminDashboardProps
             transition={{ delay: 0.2 }}
           >
             <Tabs defaultValue="projects" className="w-full">
-              <TabsList className="grid w-full grid-cols-4 mb-6">
+              <TabsList className="grid w-full grid-cols-3 mb-6">
                 <TabsTrigger value="projects">Projects</TabsTrigger>
-                <TabsTrigger value="funding">Funding</TabsTrigger>
                 <TabsTrigger value="sectors">Sectors</TabsTrigger>
                 <TabsTrigger value="users">Users</TabsTrigger>
               </TabsList>
 
               {/* Projects Tab */}
               <TabsContent value="projects">
-                <ProjectsManagementTab
-                  projects={projects}
-                />
-              </TabsContent>
-
-              {/* Funding Tab */}
-              <TabsContent value="funding">
-                <FundingManagementTab
-                  receipts={receipts}
-                  onViewReceipt={handleViewReceipt}
-                  onApprove={handleApproveReceipt}
-                  onReject={handleRejectReceipt}
-                />
+                <ProjectsManagementTab projects={projects} />
               </TabsContent>
 
               {/* Sectors Tab */}
