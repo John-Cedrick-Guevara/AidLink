@@ -58,7 +58,7 @@ export function DonationsTab({ project }: DonationsTabProps) {
   };
 
   const completedFunds =
-    project.funds?.filter((f) => f.status === "approve") || [];
+    project.funds?.filter((f) => f.status === "paid") || [];
   const totalRaised = completedFunds.reduce(
     (sum, fund) => sum + fund.amount,
     0
