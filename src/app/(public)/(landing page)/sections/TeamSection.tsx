@@ -1,8 +1,31 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
-import { developers } from "@/data/dummyData";
 import { motion } from "framer-motion";
+import Image from "next/image";
+
+const developers = [
+  {
+    name: "John Cedrick Guevara",
+    role: "Full Stack Developer",
+    avatar: "/team/ced.png",
+  },
+  {
+    name: "Roviel Joseph Hubillia",
+    role: "Quality Assurance",
+    avatar: "/team/roveil.jpg",
+  },
+  {
+    name: "Kenneth Daquel",
+    role: "UI/UX Designer",
+    avatar: "/team/kenneth.jpg",
+  },
+  {
+    name: "Mark Angelo Eduarte",
+    role: "Researcher",
+    avatar: "/team/gelo.jpg",
+  },
+];
 
 const TeamSection = () => {
   return (
@@ -35,16 +58,19 @@ const TeamSection = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <Card className="glass-card p-6 text-center hover:shadow-lg transition-all">
-                <div className="w-20 h-20 rounded-full bg-gradient-primary flex items-center justify-center text-2xl font-bold text-white mx-auto mb-4 shadow-md">
-                  {dev.avatar}
+                <div className="w-20 h-20 relative rounded-full bg-gradient-primary flex items-center justify-center text-2xl font-bold text-white mx-auto mb-4 shadow-md">
+                  <Image
+                    src={dev.avatar}
+                    alt={dev.name}
+                   fill
+                   className="object-cover rounded-full"
+
+                  />
                 </div>
                 <h3 className="text-lg font-semibold mb-1">{dev.name}</h3>
                 <div className="text-sm text-primary font-medium mb-3">
                   {dev.role}
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {dev.bio}
-                </p>
               </Card>
             </motion.div>
           ))}
