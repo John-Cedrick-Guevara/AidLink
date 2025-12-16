@@ -16,8 +16,8 @@ export async function getAdminDashboardStats(): Promise<AdminDashboardStats> {
   const [
     totalUsers,
     totalProjects,
-    totalPendingProjects,
     totalApprovedProjects,
+    totalPendingProjects,
     totalFunds,
     totalSectors,
   ] = await Promise.all([
@@ -46,7 +46,6 @@ export async function getAdminDashboardStats(): Promise<AdminDashboardStats> {
     supabase.from("sectors").select("id", { count: "exact" }),
   ]);
 
-
   return {
     totalUsers: totalUsers.count || 0,
     totalProjects: totalProjects.count || 0,
@@ -56,4 +55,3 @@ export async function getAdminDashboardStats(): Promise<AdminDashboardStats> {
     totalSectors: totalSectors.count || 0,
   };
 }
-
