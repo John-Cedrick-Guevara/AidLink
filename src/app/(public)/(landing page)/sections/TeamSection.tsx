@@ -8,7 +8,7 @@ const developers = [
   {
     name: "John Cedrick Guevara",
     role: "Full Stack Developer",
-    avatar: "/team/ced.png",
+    avatar: "/team/Ced.png",
   },
   {
     name: "Roviel Joseph Hubillia",
